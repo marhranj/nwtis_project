@@ -28,6 +28,9 @@ public class SlusacAplikacije implements ServletContextListener {
     private static ServletContext servletContext;
     private static PreuzimanjeAviona dretva;
     
+    private volatile static boolean stopirano;
+    private volatile static boolean pauzirano;
+    
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {        
         servletContext = servletContextEvent.getServletContext();
@@ -56,6 +59,22 @@ public class SlusacAplikacije implements ServletContextListener {
      */
     public static ServletContext getServletContext() {
         return servletContext;
+    }
+    
+    public static void setStopirano(boolean stopirano) {
+        SlusacAplikacije.stopirano = stopirano;
+    }
+    
+    public static boolean getStopirano() {
+        return stopirano;
+    }
+    
+    public static void setPauzirano(boolean pauzirano) {
+        SlusacAplikacije.pauzirano = pauzirano;
+    }
+    
+    public static boolean getPauzirano() {
+        return pauzirano;
     }
     
 }

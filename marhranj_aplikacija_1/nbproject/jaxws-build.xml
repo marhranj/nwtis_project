@@ -32,4 +32,32 @@
                 JAX-WS WSIMPORT SECTION
                 ===================
             -->
+    <target name="wsimport-init" depends="init">
+        <fail if="${wsimport.bad.version}" message="WsImport ant task defined in the classpath ${j2ee.platform.wsimport.classpath} has a serious bug. See http://wiki.netbeans.org/MetroIssue for details."/>
+        <mkdir dir="${build.generated.sources.dir}/jax-ws"/>
+        <property name="j2ee.platform.wsimport.classpath" value="${libs.jaxws21.classpath}"/>
+        <taskdef name="wsimport" classname="com.sun.tools.ws.ant.WsImport">
+            <classpath path="${java.home}/../lib/tools.jar:${j2ee.platform.wsimport.classpath}:${javac.classpath}"/>
+        </taskdef>
+        <condition property="conf-dir" value="${conf.dir}/" else="">
+            <isset property="conf.dir"/>
+        </condition>
+    </target>
+    <target name="wsimport-client-AerodromiWS" depends="wsimport-init">
+        <mkdir dir="${build.generated.dir}/jax-wsCache/AerodromiWS"/>
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/AerodromiWS" destdir="${build.generated.dir}/jax-wsCache/AerodromiWS" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/AerodromiWS/wsdl/nwtis.foi.hr_8080/NWTiS_2019/AerodromiWS.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://nwtis.foi.hr:8080/NWTiS_2019/AerodromiWS?wsdl" xnocompile="true" xendorsed="true" package="org.foi.nwtis.marhranj.ws.servisi">
+            <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/AerodromiWS/wsdl/nwtis.foi.hr_8080/NWTiS_2019/AerodromiWS.wsdl"/>
+            <produces dir="${build.generated.dir}/jax-wsCache/AerodromiWS"/>
+        </wsimport>
+        <copy todir="${build.generated.sources.dir}/jax-ws">
+            <fileset dir="${build.generated.dir}/jax-wsCache/AerodromiWS">
+                <include name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="wsimport-client-clean-AerodromiWS" depends="-init-project">
+        <delete dir="${build.generated.sources.dir}/jax-ws/org/foi/nwtis/marhranj/ws/servisi"/>
+        <delete dir="${build.generated.dir}/jax-wsCache/AerodromiWS"/>
+    </target>
+    <target name="wsimport-client-generate" depends="wsimport-client-AerodromiWS"/>
 </project>

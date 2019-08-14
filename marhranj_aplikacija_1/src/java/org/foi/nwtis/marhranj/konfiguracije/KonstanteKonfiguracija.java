@@ -27,5 +27,10 @@ public final class KonstanteKonfiguracija {
     public static final String PREUZIMANJE_TRAJANJE = "preuzimanje.trajanje";
     public static final String IZBORNIK_BROJ_REDAKA = "izbornik.brojRedaka";
     public static final String TABLICA_BROJ_REDAKA = "tablica.brojRedaka";
-    
+    public static final String MAKS_CEKACA = "maks.cekaca";
+    public static final String PORT = "port";
+    public static final String KORISNIK = "korisnik";
+    public static final String LOZINKA = "lozinka";
+
+
 }

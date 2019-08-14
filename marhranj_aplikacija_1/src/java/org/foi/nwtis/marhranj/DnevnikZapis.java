@@ -7,17 +7,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.foi.nwtis.marhranj.web.zrna.Aerodrom;
+import org.foi.nwtis.marhranj.konfiguracije.GeneralnaKonfiguracija;
 import org.foi.nwtis.marhranj.web.slusaci.SlusacAplikacije;
 import org.foi.nwtis.marhranj.web.zrna.PregledKorisnika;
 import org.foi.nwtis.marhranj.ws.serveri.AIRP2WS;
-import org.foi.nwtis.rest.podaci.Lokacija;
 
 public class DnevnikZapis {
 
@@ -72,16 +70,15 @@ public class DnevnikZapis {
     }
 
     private void dohvatiPodatkeIzKonfiguracije() {
-        BP_Konfiguracija bp_konfiguracija = (BP_Konfiguracija) SlusacAplikacije.getSc().getAttribute("BP_Konfig");
-        Konfiguracija konf = (Konfiguracija) SlusacAplikacije.getSc().getAttribute("konfiguracija");
-        if (bp_konfiguracija == null || konf == null) {
+        GeneralnaKonfiguracija konfiguracija = (GeneralnaKonfiguracija) SlusacAplikacije.getServletContext().getAttribute("konfiguracija");
+        if (konfiguracija == null) {
             System.out.println("Dogodila se greška prilikom preuzimanja konfiguracije");
             return;
         }
-        server = bp_konfiguracija.getServerDatabase() + bp_konfiguracija.getUserDatabase();
-        username = bp_konfiguracija.getUserUsername();
-        lozinka = bp_konfiguracija.getUserPassword();
-        driver = konf.dajPostavku("driver.database.mysql");
+        server = konfiguracija.getServerDatabase() + konfiguracija.getUserDatabase();
+        username = konfiguracija.getUserUsername();
+        lozinka = konfiguracija.getUserPassword();
+        driver = konfiguracija.getDriverDatabase();
     }
     
 }

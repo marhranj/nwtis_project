@@ -9,10 +9,14 @@ import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.IZBORNIK_BROJ_REDAKA;
+import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.KORISNIK;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.LOCATION_IQ_TOKEN;
+import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.LOZINKA;
+import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.MAKS_CEKACA;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.OPEN_SKY_NETWORK_KORISNIK;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.OPEN_SKY_NETWORK_LOZINKA;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.OPEN_WEATHER_API_KEY;
+import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.PORT;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.PREUZIMANJE_CIKLUS;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.PREUZIMANJE_POCETAK;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.PREUZIMANJE_TRAJANJE;
@@ -203,6 +207,38 @@ public class GeneralnaKonfiguracija {
      */
     public String getServer() {
         return bpSucelje.getServerDatabase() + bpSucelje.getUserDatabase();
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public String getMaksCekaca() {
+        return konfiguracija.dajPostavku(MAKS_CEKACA);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public String getPort() {
+        return konfiguracija.dajPostavku(PORT);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public String getKorisnik() {
+        return konfiguracija.dajPostavku(KORISNIK);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public String getLozinka() {
+        return konfiguracija.dajPostavku(LOZINKA);
     }
     
 }

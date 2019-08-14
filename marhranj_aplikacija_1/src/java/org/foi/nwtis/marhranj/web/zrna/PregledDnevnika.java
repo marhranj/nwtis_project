@@ -17,13 +17,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.foi.nwtis.lucbagic.konfiguracije.Konfiguracija;
-import org.foi.nwtis.lucbagic.konfiguracije.bp.BP_Konfiguracija;
+import org.foi.nwtis.marhranj.konfiguracije.GeneralnaKonfiguracija;
 import org.foi.nwtis.marhranj.web.slusaci.SlusacAplikacije;
 
 /**
  *
- * @author Lucija
+ * @author marhranj
  */
 @Named(value = "pregledDnevnika")
 @SessionScoped
@@ -190,17 +189,16 @@ public class PregledDnevnika implements Serializable {
     }
 
     private void dohvatiPodatkeIzKonfiguracije() {
-        BP_Konfiguracija bp_konfiguracija = (BP_Konfiguracija) SlusacAplikacije.getSc().getAttribute("BP_Konfig");
-        Konfiguracija konf = (Konfiguracija) SlusacAplikacije.getSc().getAttribute("konfiguracija");
-        if (bp_konfiguracija == null || konf == null) {
+        GeneralnaKonfiguracija konfiguracija = (GeneralnaKonfiguracija) SlusacAplikacije.getServletContext().getAttribute("konfiguracija");
+        if (konfiguracija == null) {
             System.out.println("Dogodila se greška prilikom preuzimanja konfiguracije");
             return;
         }
-        server = bp_konfiguracija.getServerDatabase() + bp_konfiguracija.getUserDatabase();
-        korisnik = bp_konfiguracija.getUserUsername();
-        lozinka = bp_konfiguracija.getUserPassword();
-        driver = konf.dajPostavku("driver.database.mysql");
-        tablicaBrojRedaka = Integer.parseInt(konf.dajPostavku("tablica.brojRedaka"));
+        server = konfiguracija.getServerDatabase() + konfiguracija.getUserDatabase();
+        korisnik = konfiguracija.getUserUsername();
+        lozinka = konfiguracija.getUserPassword();
+        driver = konfiguracija.getDriverDatabase();
+        tablicaBrojRedaka = Integer.parseInt(konfiguracija.getTablicakBrojRedaka());
     }
     
     private boolean autentikacijaKorisnika(String korisnickoIme, String loz) {

@@ -5,20 +5,20 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.foi.nwtis.marhranj.konfiguracije.GeneralnaKonfiguracija;
 import org.foi.nwtis.marhranj.web.slusaci.SlusacAplikacije;
 
 public class Posluzitelj extends Thread {
+    
     private ServerSocket serverSocket;
-    private Konfiguracija konf;
-    private BP_Konfiguracija bpk;
+    private GeneralnaKonfiguracija konfiguracija;
     private int port;
     private int maksCekaca;
     
-    public Posluzitelj(Konfiguracija konfiguracija, BP_Konfiguracija bpk) {
-        this.konf = konfiguracija;
-        this.port = Integer.parseInt(konfiguracija.dajPostavku("port"));
-        this.maksCekaca = Integer.parseInt(konfiguracija.dajPostavku("maks.cekaca"));
-        this.bpk = bpk;
+    public Posluzitelj(GeneralnaKonfiguracija konfiguracija) {
+        this.konfiguracija = konfiguracija;
+        this.port = Integer.parseInt(konfiguracija.getPort());
+        this.maksCekaca = Integer.parseInt(konfiguracija.getMaksCekaca());
         try {
             serverSocket = new ServerSocket(port, maksCekaca);
         } catch (IOException ex) {
@@ -47,7 +47,7 @@ public class Posluzitelj extends Thread {
                     System.out.println("Server je stopirao sa radom!");
                 } else {
                     System.out.println("Korisnik se spojio");
-                    RadnaDretva radnaDretva = new RadnaDretva(konf, bpk, socket);
+                    RadnaDretva radnaDretva = new RadnaDretva(konfiguracija, socket);
                     radnaDretva.start();
                     radnaDretva.interrupt();
                 }

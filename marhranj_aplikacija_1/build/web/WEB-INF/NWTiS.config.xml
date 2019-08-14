@@ -20,4 +20,8 @@
 <entry key="preuzimanje.trajanje">432000</entry>
 <entry key="izbornik.brojRedaka">15</entry>
 <entry key="tablica.brojRedaka">5</entry>
+<entry key="maks.cekaca">7</entry>
+<entry key="port">8000</entry>
+<entry key="korisnik">marijan</entry>
+<entry key="lozinka">mojaLozinka</entry>
 </properties>
