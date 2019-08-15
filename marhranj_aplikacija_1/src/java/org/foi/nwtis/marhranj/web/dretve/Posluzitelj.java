@@ -17,8 +17,8 @@ public class Posluzitelj extends Thread {
     
     public Posluzitelj(GeneralnaKonfiguracija konfiguracija) {
         this.konfiguracija = konfiguracija;
-        this.port = Integer.parseInt(konfiguracija.getPort());
-        this.maksCekaca = Integer.parseInt(konfiguracija.getMaksCekaca());
+        this.port = konfiguracija.getPort();
+        this.maksCekaca = konfiguracija.getMaksCekaca();
         try {
             serverSocket = new ServerSocket(port, maksCekaca);
         } catch (IOException ex) {

@@ -6,6 +6,7 @@ import org.foi.nwtis.rest.podaci.Lokacija;
  * Klasa Aerodrom služi za stvaranje objekata tipa aerodrom.
  */
 public class Aerodrom {
+    
     private String icao;
     private String naziv;
     private String drzava;

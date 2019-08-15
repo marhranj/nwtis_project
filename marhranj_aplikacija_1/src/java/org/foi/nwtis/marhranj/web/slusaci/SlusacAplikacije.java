@@ -12,7 +12,7 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import org.foi.nwtis.marhranj.konfiguracije.GeneralnaKonfiguracija;
-import org.foi.nwtis.marhranj.web.PreuzimanjeAviona;
+import org.foi.nwtis.marhranj.web.dretve.PreuzimanjeAviona;
 
 /**
  *
@@ -25,8 +25,9 @@ import org.foi.nwtis.marhranj.web.PreuzimanjeAviona;
 public class SlusacAplikacije implements ServletContextListener {
     
     public static String KONFIGURACIJA_IME_ATRIBUTA = "Konfiguracija";
+    
     private static ServletContext servletContext;
-    private static PreuzimanjeAviona dretva;
+    private static PreuzimanjeAviona preuzimanjeAvionaDretva;
     
     private volatile static boolean stopirano;
     private volatile static boolean pauzirano;
@@ -39,14 +40,14 @@ public class SlusacAplikacije implements ServletContextListener {
             
         GeneralnaKonfiguracija konfiguracija = new GeneralnaKonfiguracija(datoteka);
         servletContext.setAttribute(KONFIGURACIJA_IME_ATRIBUTA, konfiguracija);
-        dretva = new PreuzimanjeAviona(konfiguracija);    
-        dretva.start();
+        preuzimanjeAvionaDretva = new PreuzimanjeAviona(konfiguracija);    
+        preuzimanjeAvionaDretva.start();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
-        if (Objects.nonNull(dretva)) {
-            dretva.interrupt(); 
+        if (Objects.nonNull(preuzimanjeAvionaDretva)) {
+            preuzimanjeAvionaDretva.interrupt(); 
         }
         ServletContext sc = sce.getServletContext();
         sc.removeAttribute(KONFIGURACIJA_IME_ATRIBUTA);

@@ -8,12 +8,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import javax.xml.ws.WebServiceRef;
-import org.foi.nwtis.marhranj.DnevnikZapis;
+import org.foi.nwtis.marhranj.PisacDnevnika;
 import org.foi.nwtis.marhranj.konfiguracije.GeneralnaKonfiguracija;
 import org.foi.nwtis.marhranj.utils.RegexChecker;
 import org.foi.nwtis.marhranj.web.KonektorBazePodataka;
@@ -24,24 +24,17 @@ import org.foi.nwtis.marhranj.ws.servisi.StatusKorisnika;
 
 public class RadnaDretva extends Thread {
     
-    private Socket socket;
-    private GeneralnaKonfiguracija konfiguracija;
-    private Pattern pattern;
-    private Matcher matcher;
-    private boolean regexDobar;
-    private InputStream inputStream;
-    private OutputStream outputStream;
-    private StringBuffer buffer;
+    private final Socket socket;
+    private final GeneralnaKonfiguracija konfiguracija;
     private boolean komandePosluzitelj;
     private boolean stani;
-    private int brojPoruke;
     
     @WebServiceRef(wsdlLocation = "WEB-INF/wsdl/nwtis.foi.hr_8080/NWTiS_2019/AerodromiWS.wsdl")
     private AerodromiWS_Service service = new AerodromiWS_Service();
     
-    private AerodromiWS port = service.getAerodromiWSPort();
+    private final AerodromiWS port = service.getAerodromiWSPort();
     
-    private DnevnikZapis dnevnikZapis = new DnevnikZapis();
+    private final PisacDnevnika dnevnikZapis = new PisacDnevnika();
 
     public RadnaDretva(GeneralnaKonfiguracija konf, Socket socket) {
         this.konfiguracija = konf;
@@ -54,25 +47,30 @@ public class RadnaDretva extends Thread {
         String komanda = dohvatiKomandu();
         System.out.println("KOMANDA: " + komanda);
         dnevnikZapis.postaviPocetnoVrijeme();
-        if (RegexChecker.ispravniIzrazZaAutentikaciju(komanda)) {
-            autentikacijaKorisnika(matcher.group(1), matcher.group(2));
-            dnevnikZapis.upisUDnevnik(matcher.group(1), komanda, "SOCKET");
+        
+        Matcher autentikacijaMatcher = RegexChecker.dajMatcherZaAutentikaciju(komanda);
+        Matcher naredbaMatcher = RegexChecker.dajMatcherZaNaredbu(komanda);
+        Matcher grupaMatcher = RegexChecker.dajMatcherZaGrupu(komanda);
+
+        if (autentikacijaMatcher.matches()) {
+            dnevnikZapis.upisUDnevnik(autentikacijaMatcher.group(1), komanda, "SOCKET", socket);
             posaljiPorukuNaSocket("OK 10;");
-        } else if (RegexChecker.ispraviIzrazZaNaredbu(komanda)) {
-            String korisnik = matcher.group(1);
-            String lozinka = matcher.group(2);
-            String kmnd = matcher.group(3);
+        } else if (naredbaMatcher.matches()) {
+            String korisnik = naredbaMatcher.group(1);
+            String lozinka = naredbaMatcher.group(2);
+            String kmnd = naredbaMatcher.group(3);
             if (autentikacijaKorisnika(korisnik, lozinka)) {
                 izvrsiKomandu(kmnd, korisnik, komanda);
-                dnevnikZapis.upisUDnevnik(matcher.group(1), komanda, "SOCKET");
+                dnevnikZapis.upisUDnevnik(naredbaMatcher.group(1), komanda, "SOCKET", socket);
             }
-        } else if (RegexChecker.ispraviIzrazZaGrupu(komanda)) {
+        } else if (grupaMatcher.matches()) {
             if (!komandePosluzitelj) {
-                if (autentikacijaKorisnika(matcher.group(1), matcher.group(2))) {
-                    String korIme = konfiguracija.getKorisnik();
-                    String lozinka = konfiguracija.getLozinka();
-                    if (autenticirajGrupu(korIme, lozinka)) {
-                        izvrsiKomanduGrupa(korIme, lozinka, komanda);
+                String korisnik = grupaMatcher.group(1);
+                String lozinka = grupaMatcher.group(2);
+                
+                if (autentikacijaKorisnika(korisnik, lozinka)) {
+                    if (autenticirajGrupu(korisnik, lozinka)) {
+                        izvrsiKomanduGrupa(korisnik, lozinka, grupaMatcher.group(3), komanda);
                     } else {
                         posaljiPorukuNaSocket("ERR 11;");
                     }
@@ -87,34 +85,32 @@ public class RadnaDretva extends Thread {
     }
 
     private String dohvatiKomandu() {
-        try {
-            inputStream = socket.getInputStream();
-            outputStream = socket.getOutputStream();
-            buffer = new StringBuffer();
-            int znak;
-            while ((znak = inputStream.read()) != -1) {
-                buffer.append((char) znak);
-            }
-            return buffer.toString();
+        try { 
+            return pretvoriStreamUString(socket.getInputStream());
         } catch (IOException ex) {
-            Logger.getLogger(RadnaDretva.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+        return "";
+    }
+    
+    private String pretvoriStreamUString(InputStream is) {
+        Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
+        return s.hasNext() ? s.next() : "";
     }
 
     private boolean autentikacijaKorisnika(String korisnickoIme, String lozinka) {
         String upit = "SELECT COUNT(*) AS broj FROM korisnici WHERE korisnickoIme=? AND lozinka=?";
         try (Connection con = KonektorBazePodataka.dajKonekciju();
-                PreparedStatement stmt = con.prepareStatement(lozinka);) {
+                PreparedStatement stmt = con.prepareStatement(upit);) {
             stmt.setString(0, korisnickoIme);
             stmt.setString(0, lozinka);
             ResultSet rezultat = stmt.executeQuery();
             rezultat.next();
             return rezultat.getInt(1) > 0;
         } catch (SQLException ex) {
-            System.err.println("SQLException: " + ex);
+            System.out.println("SQLException: " + ex);
         }
-        System.err.println("ODAVDE TI ŠALJEM");
+        System.out.println("ODAVDE TI ŠALJEM");
         posaljiPorukuNaSocket("ERR 11;");
         return false;
     }
@@ -180,28 +176,28 @@ public class RadnaDretva extends Thread {
         switch (kmnd) {
             case "PAUZA;":
                 operacijaPauza();
-                dnevnikZapis.upisUDnevnik(matcher.group(1), komanda, "SOCKET");
+                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET", socket);
                 break;
             case "KRENI;":
                 operacijaKreni();
-                dnevnikZapis.upisUDnevnik(matcher.group(1), komanda, "SOCKET");
+                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET", socket);
                 break;
             case "PASIVNO;":
                 operacijaPasivno();
-                dnevnikZapis.upisUDnevnik(matcher.group(1), komanda, "SOCKET");
+                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET", socket);
                 break;
             case "AKTIVNO;":
                 operacijaAktivno();
-                dnevnikZapis.upisUDnevnik(matcher.group(1), komanda, "SOCKET");
+                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET", socket);
                 ;
                 break;
             case "STANI;":
                 operacijaStani();
-                dnevnikZapis.upisUDnevnik(matcher.group(1), komanda, "SOCKET");
+                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET", socket);
                 break;
             case "STANJE;":
                 operacijaStanje();
-                dnevnikZapis.upisUDnevnik(matcher.group(1), komanda, "SOCKET");
+                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET", socket);
                 break;
         }
     }
@@ -292,41 +288,40 @@ public class RadnaDretva extends Thread {
 
     }
 
-    private void izvrsiKomanduGrupa(String korisnik, String lozinka, String komanda) {
-        switch (matcher.group(3)) {
+    private void izvrsiKomanduGrupa(String korisnik, String lozinka, String operacijaGrupe, String komanda) {
+        switch (operacijaGrupe) {
             case "DODAJ;":
                 operacijaDodajGrupu(korisnik, lozinka);
-                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET");
+                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET", socket);
                 break;
             case "PREKID;":
                 operacijaPrekidGrupu(korisnik, lozinka);
-                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET");
+                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET", socket);
                 break;
             case "KRENI;":
                 operacijaKreniGrupu(korisnik, lozinka);
-                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET");
+                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET", socket);
                 break;
             case "PAUZA;":
                 operacijaPauzaGrupu(korisnik, lozinka);
-                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET");
+                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET", socket);
                 break;
             case "STANJE;":
                 operacijaStanjeGrupu(korisnik, lozinka);
-                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET");
+                dnevnikZapis.upisUDnevnik(korisnik, komanda, "SOCKET", socket);
                 break;
         }
     }
 
     private void posaljiPorukuNaSocket(String poruka) {
         try {
-            outputStream = socket.getOutputStream();
+            OutputStream outputStream = socket.getOutputStream();
             outputStream.write(poruka.getBytes());
             outputStream.flush();
             socket.shutdownOutput();
         } catch (IOException ex) {
-            Logger.getLogger(RadnaDretva.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
      public boolean aktivirajGrupu(java.lang.String korisnickoIme, java.lang.String korisnickaLozinka) {

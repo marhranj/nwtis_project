@@ -22,22 +22,21 @@ public final class RegexChecker {
     
     }
     
-    public static boolean ispravniIzrazZaAutentikaciju(String izraz) {
-        return izrazOdgovaraRegexu(izraz, REGEX_ZA_AUTENTIKACIJU);
+    public static Matcher dajMatcherZaAutentikaciju(String izraz) {
+        return kreirajOdgovarajuciMatcher(izraz, REGEX_ZA_AUTENTIKACIJU);
     }
     
-    public static boolean ispraviIzrazZaNaredbu(String izraz) {
-        return izrazOdgovaraRegexu(izraz, REGEX_ZA_AUTENTIKACIJU);
+    public static Matcher dajMatcherZaNaredbu(String izraz) {
+        return kreirajOdgovarajuciMatcher(izraz, REGEX_ZA_AUTENTIKACIJU);
     }
     
-    public static boolean ispraviIzrazZaGrupu(String izraz) {
-        return izrazOdgovaraRegexu(izraz, REGEX_ZA_AUTENTIKACIJU);
+    public static Matcher dajMatcherZaGrupu(String izraz) {
+        return kreirajOdgovarajuciMatcher(izraz, REGEX_ZA_AUTENTIKACIJU);
     }
     
-    private static boolean izrazOdgovaraRegexu(String izraz, String regex) {
+    private static Matcher kreirajOdgovarajuciMatcher(String izraz, String regex) {
         Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(izraz);
-        return matcher.matches();
+        return pattern.matcher(izraz);
     }
     
 }

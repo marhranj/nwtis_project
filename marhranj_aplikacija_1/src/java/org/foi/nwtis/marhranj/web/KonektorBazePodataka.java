@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.foi.nwtis.marhranj.konfiguracije.GeneralnaKonfiguracija;
 import org.foi.nwtis.marhranj.web.slusaci.SlusacAplikacije;
 
@@ -42,7 +44,12 @@ public final class KonektorBazePodataka {
      */
     private static void uspostaviKonekcijuNaBazuPodataka() throws SQLException {
         postaviKonfiguraciju();
-        konekcija = DriverManager.getConnection(konfiguracija.getServer(), konfiguracija.getUserUsername(), konfiguracija.getUserPassword());
+        try {
+            Class.forName(konfiguracija.getMySqlDriver());
+            konekcija = DriverManager.getConnection(konfiguracija.getServer(), konfiguracija.getUserUsername(), konfiguracija.getUserPassword());
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(KonektorBazePodataka.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     /**

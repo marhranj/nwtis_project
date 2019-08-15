@@ -12,8 +12,8 @@ public class Dnevnik {
     private String ipAdresa;
     private long trajanjeObrade;
     private Timestamp vrijemePrijema;
-    private String radnja
-;   private String vrsta;
+    private String radnja;
+    private String vrsta;
 
     public Dnevnik(int id, String korisnik, String url, String ipAdresa, long trajanjeObrade, Timestamp vrijemePrijema, String sadrzaj, String vrsta) {
         this.id = id;
@@ -89,4 +89,5 @@ public class Dnevnik {
     public void setVrsta(String vrsta) {
         this.vrsta = vrsta;
     }
+    
 }

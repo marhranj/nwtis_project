@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Dnevnik</title>
+    </h:head>
+    <h:body>
+        <h:form>
+            <p:outputLabel>Vrsta zapisa: </p:outputLabel>
+            <p:inputText value="#{obradaDnevnika.vrstaZapisa}"></p:inputText>
+            <p:outputLabel> Pocetno vrijeme: </p:outputLabel>
+            <p:inputMask  value="#{obradaDnevnika.pocetnoVrijeme}"  mask="9999-99-99 99:99:99"></p:inputMask>
+            <p:outputLabel> Zavrsno vrijeme: </p:outputLabel>
+            <p:inputMask  value="#{obradaDnevnika.zavrsnoVrijeme}"  mask="9999-99-99 99:99:99"></p:inputMask>
+            <h:panelGroup style="margin:15px ">    
+                <h:commandButton value="Filtriraj" action="#{obradaDnevnika.filtrirajZapise()}">
+                     <f:ajax execute="@form" render="@form" />
+                </h:commandButton>
+                <br />
+            </h:panelGroup>
+            <br />
+            <h:outputLabel value="#{obradaDnevnika.poruka}" style="color: red "/>
+            <br />
+            <p:dataTable  var="dnevnik" value="#{obradaDnevnika.zapisiDnevnika}"
+                          paginator="true" rows="#{obradaDnevnika.tablicaBrojRedaka}" paginatorPosition="bottom">
+                <f:facet name="header">
+                    Pregled dnevnik
+                </f:facet>
+                <p:column>
+                    <f:facet name="header">Id</f:facet>
+                    <h:outputText value="#{dnevnik.id}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">Korisnik</f:facet>
+                    <h:outputText value="#{dnevnik.korisnik}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">Url</f:facet>
+                    <h:outputText value="#{dnevnik.url}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">IP adresa</f:facet>
+                    <h:outputText value="#{dnevnik.ipAdresa}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">Vrijeme obrade</f:facet>
+                    <h:outputText value="#{dnevnik.trajanjeObrade}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">Vrijeme prijema</f:facet>
+                    <h:outputText value="#{dnevnik.vrijemePrijema}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">Sadrzaj</f:facet>
+                    <h:outputText value="#{dnevnik.radnja}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">Vrsta</f:facet>
+                    <h:outputText value="#{dnevnik.vrsta}"></h:outputText>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+</html>

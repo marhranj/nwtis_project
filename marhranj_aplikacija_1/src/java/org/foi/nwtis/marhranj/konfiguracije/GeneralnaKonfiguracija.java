@@ -8,11 +8,13 @@ package org.foi.nwtis.marhranj.konfiguracije;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.DATOTEKA_DRETVE_PREUZIMANJA_AVIONA;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.IZBORNIK_BROJ_REDAKA;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.KORISNIK;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.LOCATION_IQ_TOKEN;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.LOZINKA;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.MAKS_CEKACA;
+import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.MY_SQL_DRIVER;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.OPEN_SKY_NETWORK_KORISNIK;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.OPEN_SKY_NETWORK_LOZINKA;
 import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.OPEN_WEATHER_API_KEY;
@@ -85,40 +87,40 @@ public class GeneralnaKonfiguracija {
      *
      * @return
      */
-    public String getPreuzimanjeCiklus() {
-        return konfiguracija.dajPostavku(PREUZIMANJE_CIKLUS);
+    public int getPreuzimanjeCiklus() {
+        return Integer.parseInt(konfiguracija.dajPostavku(PREUZIMANJE_CIKLUS));
     }
     
     /**
      *
      * @return
      */
-    public String getPreuzimanjePocetak() {
-        return konfiguracija.dajPostavku(PREUZIMANJE_POCETAK);
+    public int getPreuzimanjePocetak() {
+        return Integer.parseInt(konfiguracija.dajPostavku(PREUZIMANJE_POCETAK));
     }
     
     /**
      *
      * @return
      */
-    public String getPreuzimanjeTrajanje() {
-        return konfiguracija.dajPostavku(PREUZIMANJE_TRAJANJE);
+    public int getPreuzimanjeTrajanje() {
+        return Integer.parseInt(konfiguracija.dajPostavku(PREUZIMANJE_TRAJANJE));
     }
     
     /**
      *
      * @return
      */
-    public String getIzbornikBrojRedaka() {
-        return konfiguracija.dajPostavku(IZBORNIK_BROJ_REDAKA);
+    public int getIzbornikBrojRedaka() {
+        return Integer.parseInt(konfiguracija.dajPostavku(IZBORNIK_BROJ_REDAKA));
     }
     
     /**
      *
      * @return
      */
-    public String getTablicakBrojRedaka() {
-        return konfiguracija.dajPostavku(TABLICA_BROJ_REDAKA);
+    public int getTablicakBrojRedaka() {
+        return Integer.parseInt(konfiguracija.dajPostavku(TABLICA_BROJ_REDAKA));
     }
     
     /**
@@ -155,6 +157,7 @@ public class GeneralnaKonfiguracija {
 
     /**
      *
+     * @param string
      * @return
      */
     public String getDriverDatabase(String string) {
@@ -213,16 +216,16 @@ public class GeneralnaKonfiguracija {
      *
      * @return
      */
-    public String getMaksCekaca() {
-        return konfiguracija.dajPostavku(MAKS_CEKACA);
+    public int getMaksCekaca() {
+        return Integer.parseInt(konfiguracija.dajPostavku(MAKS_CEKACA));
     }
     
     /**
      *
      * @return
      */
-    public String getPort() {
-        return konfiguracija.dajPostavku(PORT);
+    public int getPort() {
+        return Integer.parseInt(konfiguracija.dajPostavku(PORT));
     }
     
     /**
@@ -239,6 +242,22 @@ public class GeneralnaKonfiguracija {
      */
     public String getLozinka() {
         return konfiguracija.dajPostavku(LOZINKA);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public String getDatotekaDretvePreuzimanjaAviona() {
+        return konfiguracija.dajPostavku(DATOTEKA_DRETVE_PREUZIMANJA_AVIONA);
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public String getMySqlDriver() {
+        return konfiguracija.dajPostavku(MY_SQL_DRIVER);
     }
     
 }

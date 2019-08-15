@@ -1,7 +1,12 @@
 package org.foi.nwtis.marhranj.web.zrna;
 
 public class Korisnik {
-    String ime, prezime, korisnickoIme, lozinka, email;
+    
+    private String ime; 
+    private String prezime; 
+    private String korisnickoIme;
+    private String lozinka;
+    private String email;
     int id;
     
     public Korisnik(int id, String ime, String prezime, String korisnickoIme, String lozinka, String email) {
@@ -11,10 +16,6 @@ public class Korisnik {
         this.korisnickoIme = korisnickoIme;
         this.lozinka = lozinka;
         this.email = email;
-    }
-
-    public Korisnik() {
-       
     }
     
     public String getEmail() {
@@ -64,4 +65,5 @@ public class Korisnik {
     public void setId(int id) {
         this.id = id;
     }
+    
 }

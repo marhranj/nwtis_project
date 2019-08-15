@@ -31,6 +31,7 @@ public final class KonstanteKonfiguracija {
     public static final String PORT = "port";
     public static final String KORISNIK = "korisnik";
     public static final String LOZINKA = "lozinka";
-
+    public static final String DATOTEKA_DRETVE_PREUZIMANJA_AVIONA = "datoteka.dretve.preuzimanja.aviona";
+    public static final String MY_SQL_DRIVER = "jdbc.database.mysql";
 
 }

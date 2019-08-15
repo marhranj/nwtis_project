@@ -233,7 +233,7 @@ public class AIRP2WS {
      */
     @WebMethod(operationName = "izbornikBrojRedaka")
     public int izbornikBrojRedaka() {
-        return Integer.parseInt(this.getKonfiguracija().getIzbornikBrojRedaka());
+        return this.getKonfiguracija().getIzbornikBrojRedaka();
     }
 
     /**
@@ -242,7 +242,7 @@ public class AIRP2WS {
      */
     @WebMethod(operationName = "tablicaBrojRedaka")
     public int tablicaBrojRedaka() {
-        return Integer.parseInt(this.getKonfiguracija().getTablicakBrojRedaka());
+        return this.getKonfiguracija().getTablicakBrojRedaka();
     }
     
     /**
