@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <head>
+        <title>Pregled poslužitelj</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </head>
+    <body>
+        <h:form>
+            <h:commandButton value="Pauza" action="#{pregledPosluzitelj.pauzirajServer()}">
+                <f:ajax execute="@this" render="odgovor"/>
+            </h:commandButton>
+            <h:commandButton value="Kreni" action="#{pregledPosluzitelj.kreniServer()}">
+                <f:ajax execute="@this" render=""/>
+            </h:commandButton>
+            <h:commandButton value="Pasivno" action="#{pregledPosluzitelj.pasivnoServer()}">
+                <f:ajax execute="@this" render=""/>
+            </h:commandButton>
+            <h:commandButton value="Aktivno" action="#{pregledPosluzitelj.aktivnoServer()}">
+                <f:ajax execute="@this" render=""/>
+            </h:commandButton>
+            <h:commandButton value="Stani" action="#{pregledPosluzitelj.staniServer()}">
+                <f:ajax execute="@this" render=""/>
+            </h:commandButton>
+            <h:commandButton value="Stanje" action="#{pregledPosluzitelj.stanjeServer()}">
+                <f:ajax execute="@this" render=""/>
+            </h:commandButton><br/>
+            <h:inputText value="#{pregledPosluzitelj.odgovorKomanda}" readonly="true"></h:inputText>
+            <h:outputLabel value="#{pregledPosluzitelj.komentarKomanda}"/>
+        </h:form>
+        <br/>
+        <h:form>
+            <h:commandButton value="DODAJ" action="#{pregledPosluzitelj.dodajGrupu()}">
+                <f:ajax execute="@this" render=""/>
+            </h:commandButton>
+            <h:commandButton value="PREKID" action="#{pregledPosluzitelj.deregistrirajGrupu()}">
+                <f:ajax execute="@this" render=""/>
+            </h:commandButton>
+            <h:commandButton value="KRENI" action="#{pregledPosluzitelj.aktivirajGrupu()}">
+                <f:ajax execute="@this" render=""/>
+            </h:commandButton>
+            <h:commandButton value="PAUZA" action="#{pregledPosluzitelj.blokirajGrupu()}">
+                <f:ajax execute="@this" render=""/>
+            </h:commandButton>
+            <h:commandButton value="STANJE" action="#{pregledPosluzitelj.stanjeGrupe()}">
+                <f:ajax execute="@this" render=""/>
+            </h:commandButton><br/>
+            <h:inputText value="#{pregledPosluzitelj.odgovorGrupa}" readonly="true"></h:inputText>
+            <h:outputLabel value="#{pregledPosluzitelj.komentarGrupa}"/>
+        </h:form>
+    </body>
+</html>

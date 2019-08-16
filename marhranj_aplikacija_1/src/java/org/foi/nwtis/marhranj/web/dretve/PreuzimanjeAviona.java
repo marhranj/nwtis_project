@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package org.foi.nwtis.marhranj.web.dretve;
 
 import com.google.gson.JsonObject;
@@ -36,85 +35,42 @@ import org.foi.nwtis.rest.podaci.Lokacija;
 /**
  *
  * @author marhranj
- * 
+ *
  * Klasa koja se vrti u ciklusima i preuzima avione te ih sprema u bazu podataka
- * 
+ *
  */
 public class PreuzimanjeAviona extends Thread {
-     
+
     private static final String KOORDINATE = "COORDINATES";
     private static final String ICAO = "IDENT";
     private static final String NAZIV = "NAME";
     private static final String ISO_KRATICA_DRZAVE = "ISO_COUNTRY";
-    
+
     private static final String POCETAK_INTERVALA = "pocetakIntervala";
     private static final String REDNI_BROJ_CIKLUSA = "redniBrojCiklusa";
-    
+
     private final GeneralnaKonfiguracija konfiguracija;
-    
+
     private int pocetakIntervala;
     private int krajIntervala;
     private int brojacCiklusa;
-    
+
     private File datoteka;
-    
-    private boolean kraj;
 
     /**
      * Konstruktor
-     * 
-     * @param konfiguracija 
+     *
+     * @param konfiguracija
      */
     public PreuzimanjeAviona(GeneralnaKonfiguracija konfiguracija) {
         this.konfiguracija = konfiguracija;
     }
-    
-    @Override
-    public void interrupt() {
-        kraj = true;
-        super.interrupt();
-    }
 
     @Override
     public void run() {
-        while(!kraj) {
-            try {
-                postaviPodatkeIzDatoteke();
-
-                try (Connection con = KonektorBazePodataka.dajKonekciju(); 
-                        PreparedStatement dajSveAerodrome = con.prepareStatement("Select * from MYAIRPORTS");
-                        ResultSet rezultat = dajSveAerodrome.executeQuery();) {
-                    OSKlijent osKlijent = new OSKlijent(konfiguracija.getOpenSkyNetworkKorisnik(), konfiguracija.getOpenSkyNetworkLozinku());
-
-                    List<Aerodrom> aerodromi = new ArrayList<>();
-                    
-                    while (rezultat.next()) {
-                        dodajAerodromZaPrikupljanjePodataka(rezultat, aerodromi);
-                    }
-
-                    for (Aerodrom aerodrom : aerodromi) {
-                        List<AvionLeti> letoviAviona = osKlijent.getDepartures(aerodrom.getIcao(), pocetakIntervala, krajIntervala);               
-
-                        for (int i = 0; i < letoviAviona.size() && i < 100; i++) {
-                           AvionLeti letAviona = letoviAviona.get(i);
-                           if (!zapisPostojiUBaziPodataka(letAviona, con) && Objects.nonNull(letAviona.getEstArrivalAirport())) {
-                                zapisiAvoinUBazuPodataka(letAviona, con);
-                           }
-                        }
-                        
-                    }
-                    
-                    pocetakIntervala = krajIntervala;
-                    krajIntervala += konfiguracija.getPreuzimanjeTrajanje();
-                } catch (SQLException ex) {
-                    System.out.println("SQLException: " + ex);
-                }
-                
-                Thread.sleep(konfiguracija.getPreuzimanjeCiklus() * 1000 * 60);
-                brojacCiklusa++;
-                azurirajDatotekuZaEvidencijuDretve();
-            } catch (InterruptedException ex) {
-                System.out.println("InterruptedException: " + ex);
+        while (!SlusacAplikacije.getZaustavljeno()) {
+            if (!SlusacAplikacije.getPasivno()) {
+                obaviPreuzimanjeAviona();
             }
         }
     }
@@ -125,7 +81,52 @@ public class PreuzimanjeAviona extends Thread {
         kreirajDatotekuDretvePreuzimanjaAviona();
         super.start();
     }
-    
+
+    private void obaviPreuzimanjeAviona() {
+        try {
+            postaviPodatkeIzDatoteke();
+            
+            zapisiAvioneUBazuPodataka();
+            
+            Thread.sleep(konfiguracija.getPreuzimanjeCiklus() * 1000 * 60);
+            brojacCiklusa++;
+            azurirajDatotekuZaEvidencijuDretve();
+        } catch (InterruptedException ex) {
+            System.out.println("InterruptedException: " + ex);
+        }
+    }
+
+    private void zapisiAvioneUBazuPodataka() {
+        try (Connection con = KonektorBazePodataka.dajKonekciju();
+                PreparedStatement dajSveAerodrome = con.prepareStatement("Select * from MYAIRPORTS");
+                ResultSet rezultat = dajSveAerodrome.executeQuery();) {
+            OSKlijent osKlijent = new OSKlijent(konfiguracija.getOpenSkyNetworkKorisnik(), konfiguracija.getOpenSkyNetworkLozinku());
+
+            List<Aerodrom> aerodromi = new ArrayList<>();
+
+            while (rezultat.next()) {
+                dodajAerodromZaPrikupljanjePodataka(rezultat, aerodromi);
+            }
+
+            for (Aerodrom aerodrom : aerodromi) {
+                List<AvionLeti> letoviAviona = osKlijent.getDepartures(aerodrom.getIcao(), pocetakIntervala, krajIntervala);
+
+                for (int i = 0; i < letoviAviona.size() && i < 100; i++) {
+                    AvionLeti letAviona = letoviAviona.get(i);
+                    if (!zapisPostojiUBaziPodataka(letAviona, con) && Objects.nonNull(letAviona.getEstArrivalAirport())) {
+                        zapisiAvoinUBazuPodataka(letAviona, con);
+                    }
+                }
+
+            }
+
+            pocetakIntervala = krajIntervala;
+            krajIntervala += konfiguracija.getPreuzimanjeTrajanje();
+        } catch (SQLException ex) {
+            System.out.println("SQLException: " + ex);
+        }
+    }
+
     private void postaviPodatkeIzDatoteke() {
         try {
             JsonObject jsonObject = new JsonParser().parse(new FileReader(datoteka)).getAsJsonObject();
@@ -142,7 +143,7 @@ public class PreuzimanjeAviona extends Thread {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void kreirajDatotekuDretvePreuzimanjaAviona() {
         try {
             datoteka = new File(SlusacAplikacije.getServletContext().getRealPath("/WEB-INF") + "/" + konfiguracija.getDatotekaDretvePreuzimanjaAviona());
@@ -150,35 +151,35 @@ public class PreuzimanjeAviona extends Thread {
                 datoteka.createNewFile();
             }
         } catch (IOException ex) {
-             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
         azurirajDatotekuZaEvidencijuDretve();
     }
-    
+
     private void azurirajDatotekuZaEvidencijuDretve() {
         try {
             zapisiUDatoteku(kreirajJsonStringZaEvidencijuDretve(pocetakIntervala, brojacCiklusa), datoteka);
         } catch (IOException ex) {
-             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     private void zapisiUDatoteku(String zapis, File datoteka) throws IOException {
         try (FileWriter fileWriter = new FileWriter(datoteka)) {
             fileWriter.write(zapis);
         }
     }
-    
+
     private String kreirajJsonStringZaEvidencijuDretve(int pocetakIntervala, int brojacCiklusa) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(POCETAK_INTERVALA, pocetakIntervala);
         jsonObject.addProperty(REDNI_BROJ_CIKLUSA, brojacCiklusa);
         return jsonObject.toString();
     }
-    
+
     /**
      * Metoda koja dodaje aerodrom u listu aerodroma
-     * 
+     *
      * @param rezultat
      * @param aerodromi
      * @throws SQLException
@@ -186,13 +187,13 @@ public class PreuzimanjeAviona extends Thread {
     private void dodajAerodromZaPrikupljanjePodataka(ResultSet rezultat, List<Aerodrom> aerodromi) throws SQLException {
         String[] koordinate = rezultat.getString(KOORDINATE).split(", ");
         Aerodrom aerodrom = new Aerodrom(
-                rezultat.getString(ICAO), 
+                rezultat.getString(ICAO),
                 rezultat.getString(NAZIV),
                 rezultat.getString(ISO_KRATICA_DRZAVE),
                 new Lokacija(koordinate[0], koordinate[1]));
         aerodromi.add(aerodrom);
     }
-    
+
     /**
      * Metoda u kojoj se postavlja interval za dohvacanje podataka
      *
@@ -201,25 +202,27 @@ public class PreuzimanjeAviona extends Thread {
         pocetakIntervala = (int) (new Date().getTime() / 1000) - (konfiguracija.getPreuzimanjePocetak() * 60 * 60);
         krajIntervala = pocetakIntervala + konfiguracija.getPreuzimanjeTrajanje();
     }
-    
+
     /**
      * Metoda koja provjerava postoji li avion u bazi podataka
+     *
      * @param letAviona
      * @param con
      * @throws SQLException
-     * @return 
+     * @return
      */
     private boolean zapisPostojiUBaziPodataka(AvionLeti letAviona, Connection con) throws SQLException {
-        PreparedStatement provjeriUnosUBazu = con.prepareStatement("Select count(*) from AIRPLANES where FIRSTSEEN = ? and ICAO24 = ?");
+        PreparedStatement provjeriUnosUBazu = con.prepareStatement("Select COUNT(*) from AIRPLANES where FIRSTSEEN = ? and ICAO24 = ?");
         provjeriUnosUBazu.setInt(1, letAviona.getFirstSeen());
         provjeriUnosUBazu.setString(2, letAviona.getIcao24());
         ResultSet rezultat = provjeriUnosUBazu.executeQuery();
         rezultat.next();
         return rezultat.getInt(1) > 0;
     }
-    
+
     /**
      * Metoda koja zapisuje avion u bazu podataka
+     *
      * @param letAviona
      * @param con
      * @throws SQLException
@@ -227,13 +230,13 @@ public class PreuzimanjeAviona extends Thread {
     private void zapisiAvoinUBazuPodataka(AvionLeti letAviona, Connection con) throws SQLException {
         PreparedStatement insertStatement = con.prepareStatement(
                 "INSERT INTO AIRPLANES (ICAO24, FIRSTSEEN, ESTDEPARTUREAIRPORT, LASTSEEN, "
-                        + "ESTARRIVALAIRPORT, CALLSIGN, ESTDEPARTUREAIRPORTHORIZDISTANCE, "
-                        + "ESTDEPARTUREAIRPORTVERTDISTANCE, ESTARRIVALAIRPORTHORIZDISTANCE, "
-                        + "ESTARRIVALAIRPORTVERTDISTANCE, DEPARTUREAIRPORTCANDIDATESCOUNT, "
-                        + "ARRIVALAIRPORTCANDIDATESCOUNT, `STORED`)"
-                        + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                + "ESTARRIVALAIRPORT, CALLSIGN, ESTDEPARTUREAIRPORTHORIZDISTANCE, "
+                + "ESTDEPARTUREAIRPORTVERTDISTANCE, ESTARRIVALAIRPORTHORIZDISTANCE, "
+                + "ESTARRIVALAIRPORTVERTDISTANCE, DEPARTUREAIRPORTCANDIDATESCOUNT, "
+                + "ARRIVALAIRPORTCANDIDATESCOUNT, `STORED`)"
+                + " VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
         );
-        
+
         insertStatement.setString(1, letAviona.getIcao24());
         insertStatement.setInt(2, letAviona.getFirstSeen());
         insertStatement.setString(3, letAviona.getEstDepartureAirport());
@@ -247,9 +250,9 @@ public class PreuzimanjeAviona extends Thread {
         insertStatement.setInt(11, letAviona.getDepartureAirportCandidatesCount());
         insertStatement.setInt(12, letAviona.getArrivalAirportCandidatesCount());
         insertStatement.setTimestamp(13, new Timestamp(System.currentTimeMillis()));
-        
+
         insertStatement.execute();
         insertStatement.close();
     }
-    
+
 }

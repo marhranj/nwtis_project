@@ -8,21 +8,21 @@ package org.foi.nwtis.marhranj.konfiguracije;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.DATOTEKA_DRETVE_PREUZIMANJA_AVIONA;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.IZBORNIK_BROJ_REDAKA;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.KORISNIK;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.LOCATION_IQ_TOKEN;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.LOZINKA;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.MAKS_CEKACA;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.MY_SQL_DRIVER;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.OPEN_SKY_NETWORK_KORISNIK;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.OPEN_SKY_NETWORK_LOZINKA;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.OPEN_WEATHER_API_KEY;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.PORT;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.PREUZIMANJE_CIKLUS;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.PREUZIMANJE_POCETAK;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.PREUZIMANJE_TRAJANJE;
-import static org.foi.nwtis.marhranj.konfiguracije.KonstanteKonfiguracija.TABLICA_BROJ_REDAKA;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.DATOTEKA_DRETVE_PREUZIMANJA_AVIONA;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.IZBORNIK_BROJ_REDAKA;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.LOCATION_IQ_TOKEN;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.MAKS_CEKACA;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.KORISNIK;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.LOZINKA;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.MY_SQL_DRIVER;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.OPEN_SKY_NETWORK_KORISNIK;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.OPEN_SKY_NETWORK_LOZINKA;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.OPEN_WEATHER_API_KEY;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.PORT;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.PREUZIMANJE_CIKLUS;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.PREUZIMANJE_POCETAK;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.PREUZIMANJE_TRAJANJE;
+import static org.foi.nwtis.marhranj.konstante.KonstanteKonfiguracija.TABLICA_BROJ_REDAKA;
 import org.foi.nwtis.marhranj.konfiguracije.bp.BP_Konfiguracija;
 import org.foi.nwtis.marhranj.konfiguracije.bp.BP_Sucelje;
 
@@ -216,6 +216,22 @@ public class GeneralnaKonfiguracija {
      *
      * @return
      */
+    public String getKorisnik() {
+        return konfiguracija.dajPostavku(KORISNIK);
+    }
+      
+    /**
+     *
+     * @return
+     */
+    public String getLozinka() {
+        return konfiguracija.dajPostavku(LOZINKA);
+    }
+    
+    /**
+     *
+     * @return
+     */
     public int getMaksCekaca() {
         return Integer.parseInt(konfiguracija.dajPostavku(MAKS_CEKACA));
     }
@@ -226,22 +242,6 @@ public class GeneralnaKonfiguracija {
      */
     public int getPort() {
         return Integer.parseInt(konfiguracija.dajPostavku(PORT));
-    }
-    
-    /**
-     *
-     * @return
-     */
-    public String getKorisnik() {
-        return konfiguracija.dajPostavku(KORISNIK);
-    }
-    
-    /**
-     *
-     * @return
-     */
-    public String getLozinka() {
-        return konfiguracija.dajPostavku(LOZINKA);
     }
     
     /**

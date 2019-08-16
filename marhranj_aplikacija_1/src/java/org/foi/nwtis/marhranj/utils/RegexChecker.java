@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 public final class RegexChecker {
     
     private static final String REGEX_ZA_AUTENTIKACIJU = "^KORISNIK ([a-zA-Z0-9_-]+); LOZINKA ([a-zA-Z0-9_-]+);";
-    private static final String REGEX_ZA_NAREDBU = "^KORISNIK ([a-zA-Z0-9_-]+); LOZINKA ([a-zA-Z0-9_-]+); (PAUZA;|KRENI;|PASIVNO;|AKTIVNO;|STANI;|STANJE;)";
+    private static final String REGEX_ZA_SERVER = "^KORISNIK ([a-zA-Z0-9_-]+); LOZINKA ([a-zA-Z0-9_-]+); (PAUZA;|KRENI;|PASIVNO;|AKTIVNO;|STANI;|STANJE;)";
     private static final String REGEX_ZA_GRUPU = "^KORISNIK ([a-zA-Z0-9_-]+); LOZINKA ([a-zA-Z0-9_-]+); GRUPA (DODAJ;|PREKID;|KRENI;|PAUZA;|STANJE;)";
     
     private RegexChecker() {
@@ -26,12 +26,12 @@ public final class RegexChecker {
         return kreirajOdgovarajuciMatcher(izraz, REGEX_ZA_AUTENTIKACIJU);
     }
     
-    public static Matcher dajMatcherZaNaredbu(String izraz) {
-        return kreirajOdgovarajuciMatcher(izraz, REGEX_ZA_AUTENTIKACIJU);
+    public static Matcher dajMatcherZaServer(String izraz) {
+        return kreirajOdgovarajuciMatcher(izraz, REGEX_ZA_SERVER);
     }
     
     public static Matcher dajMatcherZaGrupu(String izraz) {
-        return kreirajOdgovarajuciMatcher(izraz, REGEX_ZA_AUTENTIKACIJU);
+        return kreirajOdgovarajuciMatcher(izraz, REGEX_ZA_GRUPU);
     }
     
     private static Matcher kreirajOdgovarajuciMatcher(String izraz, String regex) {

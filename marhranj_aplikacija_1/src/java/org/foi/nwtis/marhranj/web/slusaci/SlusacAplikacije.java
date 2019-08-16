@@ -13,6 +13,7 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import org.foi.nwtis.marhranj.konfiguracije.GeneralnaKonfiguracija;
 import org.foi.nwtis.marhranj.web.dretve.PreuzimanjeAviona;
+import org.foi.nwtis.marhranj.web.dretve.Server;
 
 /**
  *
@@ -27,9 +28,12 @@ public class SlusacAplikacije implements ServletContextListener {
     public static String KONFIGURACIJA_IME_ATRIBUTA = "Konfiguracija";
     
     private static ServletContext servletContext;
-    private static PreuzimanjeAviona preuzimanjeAvionaDretva;
     
-    private volatile static boolean stopirano;
+    private PreuzimanjeAviona preuzimanjeAvionaDretva;
+    private Server serverDretva;
+
+    private volatile static boolean zaustavljeno;
+    private volatile static boolean pasivno;
     private volatile static boolean pauzirano;
     
     @Override
@@ -42,12 +46,17 @@ public class SlusacAplikacije implements ServletContextListener {
         servletContext.setAttribute(KONFIGURACIJA_IME_ATRIBUTA, konfiguracija);
         preuzimanjeAvionaDretva = new PreuzimanjeAviona(konfiguracija);    
         preuzimanjeAvionaDretva.start();
+        serverDretva = new Server(konfiguracija);
+        serverDretva.start();
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent sce) {
         if (Objects.nonNull(preuzimanjeAvionaDretva)) {
             preuzimanjeAvionaDretva.interrupt(); 
+        }
+        if (Objects.nonNull(serverDretva)) {
+            serverDretva.interrupt(); 
         }
         ServletContext sc = sce.getServletContext();
         sc.removeAttribute(KONFIGURACIJA_IME_ATRIBUTA);
@@ -62,12 +71,20 @@ public class SlusacAplikacije implements ServletContextListener {
         return servletContext;
     }
     
-    public static void setStopirano(boolean stopirano) {
-        SlusacAplikacije.stopirano = stopirano;
+    public static void setZaustavljeno(boolean zaustavljeno) {
+        SlusacAplikacije.zaustavljeno = zaustavljeno;
     }
     
-    public static boolean getStopirano() {
-        return stopirano;
+    public static boolean getZaustavljeno() {
+        return zaustavljeno;
+    }
+    
+    public static void setPasivno(boolean pasivno) {
+        SlusacAplikacije.pasivno = pasivno;
+    }
+    
+    public static boolean getPasivno() {
+        return pasivno;
     }
     
     public static void setPauzirano(boolean pauzirano) {
