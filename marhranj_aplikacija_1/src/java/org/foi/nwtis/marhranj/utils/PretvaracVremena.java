@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 public class PretvaracVremena {
     
-    public static Timestamp pretvoriStringUTimeStamp(String stringDatum) {
+    public static Timestamp pretvoriStringUTimestamp(String stringDatum) {
         try {
           DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
           Date date = formatter.parse(stringDatum);
@@ -30,6 +30,10 @@ public class PretvaracVremena {
           Logger.getLogger(PretvaracVremena.class.getName()).log(Level.SEVERE, null, ex);
           return null;
         }
-  }
+    }
+    
+    public static long pretvoriTimestampStringULong(String stringDatum) {
+        return pretvoriStringUTimestamp(stringDatum).getTime() / 1000;
+    }
     
 }

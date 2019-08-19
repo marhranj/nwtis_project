@@ -4,10 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,8 +12,8 @@ import javax.xml.ws.WebServiceRef;
 import org.foi.nwtis.marhranj.PisacDnevnika;
 import org.foi.nwtis.marhranj.konfiguracije.GeneralnaKonfiguracija;
 import org.foi.nwtis.marhranj.konstante.Statusi;
+import org.foi.nwtis.marhranj.utils.BPUtils;
 import org.foi.nwtis.marhranj.utils.RegexChecker;
-import org.foi.nwtis.marhranj.web.KonektorBazePodataka;
 import org.foi.nwtis.marhranj.web.slusaci.SlusacAplikacije;
 import org.foi.nwtis.marhranj.ws.servisi.AerodromiWS;
 import org.foi.nwtis.marhranj.ws.servisi.AerodromiWS_Service;
@@ -39,7 +35,7 @@ public class RadnaDretva extends Thread {
     
     private final AerodromiWS port = service.getAerodromiWSPort();
     
-    private final PisacDnevnika dnevnikZapis = new PisacDnevnika();
+    private final PisacDnevnika pisacDnevnika = new PisacDnevnika();
 
     public RadnaDretva(GeneralnaKonfiguracija konf, Socket socket) {
         this.konfiguracija = konf;
@@ -256,17 +252,7 @@ public class RadnaDretva extends Thread {
     }
 
     private boolean provjeriKorisnika(String korisnickoIme, String lozinka) {
-        boolean postojiKorisnik = false;
-        try (Connection con = KonektorBazePodataka.dajKonekciju();
-                PreparedStatement stmt = con.prepareStatement("SELECT COUNT(*) FROM korisnici WHERE korisnickoIme=? AND lozinka=?");) {
-            stmt.setString(1, korisnickoIme);
-            stmt.setString(2, lozinka);
-            ResultSet rezultat = stmt.executeQuery();
-            rezultat.next();
-            postojiKorisnik = rezultat.getInt(1) > 0;
-        } catch (SQLException e) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
-        }
+        boolean postojiKorisnik = BPUtils.provjeriKorisnika(korisnickoIme, lozinka);
         if (postojiKorisnik) {
             dodajPoruku(Statusi.OK_10);
         } else {
