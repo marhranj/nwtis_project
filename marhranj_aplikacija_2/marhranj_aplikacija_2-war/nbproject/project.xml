@@ -9,6 +9,32 @@
                 <library dirs="100">
                     <file>${reference.marhranj_aplikacija_2-ejb.dist}</file>
                 </library>
+                <library dirs="200">
+                    <file>${libs.GlassFish Server 5.1 JAX-RS.classpath}</file>
+                </library>
+                <library dirs="200">
+                    <file>${libs.GlassFish Server 5.1 Jersey.classpath}</file>
+                </library>
+                <library dirs="200">
+                    <file>${libs.JAX-RS_2.1.5.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${libs.Jersey_2.28.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${libs.NWTiS_2019_REST_lib.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${libs.primefaces.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
+                <library dirs="200">
+                    <file>${libs.jsf20.classpath}</file>
+                    <path-in-war>WEB-INF/lib</path-in-war>
+                </library>
             </web-module-libraries>
             <web-module-additional-libraries/>
             <source-roots>

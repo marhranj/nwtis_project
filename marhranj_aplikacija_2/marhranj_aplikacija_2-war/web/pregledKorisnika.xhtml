@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      lang="#{lokalizacija.odabraniJezik}">
+    <h:head>
+        <title>#{p['index.naslov']}</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="./predlozak.xhtml">
+            <ui:define name="top">
+                #{p['pregledKorisnika.pregledKorisnika']}
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form>
+                    <h:commandButton value="#{p['index.hr']}" action="#{lokalizacija.odaberiJezik('hr')}" rendered="#{lokalizacija.odabraniJezik ne 'hr'}"></h:commandButton>
+                    <h:outputText rendered="#{lokalizacija.odabraniJezik ne 'hr'}" />
+                    <h:commandButton value="#{p['index.en']}" action="#{lokalizacija.odaberiJezik('en')}" rendered="#{lokalizacija.odabraniJezik ne 'en'}"></h:commandButton>
+                    <h:outputText rendered="#{lokalizacija.odabraniJezik ne 'en'}" />
+                </h:form>
+                <br/>
+                <h:form>
+                    <p:dataTable  var="korisnik" value="#{pregledKorisnika.listaKorisnika}"
+                                  paginator="true" paginatorPosition="bottom" rows="5"
+                                  paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                        <f:facet name="header">
+                            #{p['pregledKorisnika.pregledKorisnika']}
+                        </f:facet>
+                        <p:column>
+                            <f:facet name="header">Id</f:facet>
+                            <h:outputText value="#{korisnik.id}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">#{p['pregledKorisnika.ime']}</f:facet>
+                            <h:outputText value="#{korisnik.ime}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">#{p['pregledKorisnika.prezime']}</f:facet>
+                            <h:outputText value="#{korisnik.prezime}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">#{p['pregledKorisnika.korIme']}</f:facet>
+                            <h:outputText value="#{korisnik.korisnickoIme}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">#{p['pregledKorisnika.lozinka']}</f:facet>
+                            <h:outputText value="#{korisnik.lozinka}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">Email</f:facet>
+                            <h:outputText value="#{korisnik.email}"></h:outputText>
+                        </p:column>
+                    </p:dataTable>
+                </h:form>
+                <br/>
+                <h:form>
+                    <label>#{p['pregledKorisnika.lozinka']}: </label> <h:inputSecret value="#{pregledKorisnika.loz}"></h:inputSecret><br></br><br></br>
+                    <label> #{p['pregledKorisnika.potvrdaLozinke']}:</label> <h:inputSecret value="#{pregledKorisnika.potvrdaLozinke}"></h:inputSecret><br></br><br></br>
+                    <label> #{p['pregledKorisnika.ime']}: </label><h:inputText value="#{pregledKorisnika.ime}"></h:inputText><br></br><br></br>
+                    <label> #{p['pregledKorisnika.prezime']}: </label><h:inputText value="#{pregledKorisnika.prezime}"></h:inputText><br></br><br></br>
+                    <label> Email:</label><h:inputText value="#{pregledKorisnika.email}"></h:inputText><br></br> <br></br> <br></br>
+                    <h:commandButton value="#{p['pregledKorisnika.azuriraj']}" action="#{pregledKorisnika.azuriraj()}"/><br/>
+                </h:form>
+                <h:outputLabel value="#{pregledKorisnika.odgovor}"></h:outputLabel>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
