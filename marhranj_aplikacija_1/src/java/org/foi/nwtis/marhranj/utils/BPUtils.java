@@ -16,8 +16,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.foi.nwtis.marhranj.web.KonektorBazePodataka;
 import org.foi.nwtis.marhranj.web.zrna.Aerodrom;
+import org.foi.nwtis.marhranj.web.zrna.MojAvionLeti;
 import org.foi.nwtis.marhranj.web.zrna.ZapisDnevnika;
-import org.foi.nwtis.rest.podaci.AvionLeti;
 import org.foi.nwtis.rest.podaci.Lokacija;
 
 /**
@@ -45,12 +45,13 @@ public final class BPUtils {
         return false;
     }
 
-    public static List<AvionLeti> dohvatiAvioneIzResultSeta(ResultSet rezultat) throws SQLException {
-        List<AvionLeti> poletjeliAvioni = new ArrayList<>();
+    public static List<MojAvionLeti> dohvatiAvioneIzResultSeta(ResultSet rezultat) throws SQLException {
+        List<MojAvionLeti> poletjeliAvioni = new ArrayList<>();
 
         while (rezultat.next()) {
-            AvionLeti avionLeti = new AvionLeti();
-
+            MojAvionLeti avionLeti = new MojAvionLeti();
+            
+            avionLeti.setId(rezultat.getInt("ID"));
             avionLeti.setIcao24(rezultat.getString("ICAO24"));
             avionLeti.setFirstSeen(rezultat.getInt("FIRSTSEEN"));
             avionLeti.setEstDepartureAirport(rezultat.getString("ESTDEPARTUREAIRPORT"));
@@ -97,7 +98,10 @@ public final class BPUtils {
                     rezultat.getString("korisnik"),
                     rezultat.getTimestamp("vrijeme"),
                     rezultat.getString("naredba"),
-                    rezultat.getString("vrsta")
+                    rezultat.getString("url"),
+                    rezultat.getString("ip"),
+                    rezultat.getString("vrsta"),
+                    rezultat.getLong("trajanje")
             );
 
             zapisiDnevnika.add(dnevnik);

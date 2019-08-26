@@ -9,10 +9,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import javax.xml.ws.WebServiceRef;
+import org.foi.nwtis.marhranj.BrojacVremena;
 import org.foi.nwtis.marhranj.PisacDnevnika;
 import org.foi.nwtis.marhranj.konfiguracije.GeneralnaKonfiguracija;
 import org.foi.nwtis.marhranj.konstante.Statusi;
 import org.foi.nwtis.marhranj.utils.BPUtils;
+import org.foi.nwtis.marhranj.utils.GrupeUtils;
 import org.foi.nwtis.marhranj.utils.RegexChecker;
 import org.foi.nwtis.marhranj.web.slusaci.SlusacAplikacije;
 import org.foi.nwtis.marhranj.ws.servisi.AerodromiWS;
@@ -20,8 +22,6 @@ import org.foi.nwtis.marhranj.ws.servisi.AerodromiWS_Service;
 import org.foi.nwtis.marhranj.ws.servisi.StatusKorisnika;
 import static org.foi.nwtis.marhranj.ws.servisi.StatusKorisnika.AKTIVAN;
 import static org.foi.nwtis.marhranj.ws.servisi.StatusKorisnika.BLOKIRAN;
-import static org.foi.nwtis.marhranj.ws.servisi.StatusKorisnika.DEREGISTRIRAN;
-import static org.foi.nwtis.marhranj.ws.servisi.StatusKorisnika.REGISTRIRAN;
 
 public class RadnaDretva extends Thread {
     
@@ -54,13 +54,13 @@ public class RadnaDretva extends Thread {
             provjeriKorisnika(autentikacijaMatcher.group(1), autentikacijaMatcher.group(2));
         } else if (serverMatcher.matches()) {
             if (provjeriKorisnika(serverMatcher.group(1), serverMatcher.group(2))) {
-                obradiServer(serverMatcher.group(3));
+                obradiServer(serverMatcher.group(1), serverMatcher.group(3));
             }
         } else if (grupaMatcher.matches()) {
             if (SlusacAplikacije.getPauzirano()) {
                 dodajPoruku("Poslana je naredba PAUZA za server stoga se ne koriste komande za grupu");
             } else if (provjeriKorisnika(grupaMatcher.group(1), grupaMatcher.group(2))) {
-                obradiGrupu(grupaMatcher.group(3));
+                obradiGrupu(grupaMatcher.group(1), grupaMatcher.group(3));
             }
         } else {
             dodajPoruku("Neispravna naredba");
@@ -68,7 +68,9 @@ public class RadnaDretva extends Thread {
         odgovoriPutemSocketa(poruka, socket);
     }
     
-    private void obradiServer(String naredba) {
+    private void obradiServer(String korisnickoIme, String naredba) {
+        BrojacVremena brojacVremena = new BrojacVremena();
+        
         switch(naredba) {
             case "PAUZA;":
                 obradiPauzaServer();
@@ -88,31 +90,40 @@ public class RadnaDretva extends Thread {
             case "STANI;":
                 obradiStaniServer();
         }
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "Obrada grupe, naredba:" + naredba, "SOCKET",
+                socket.getInetAddress().getHostName(), socket.getInetAddress().getHostAddress(),
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
     }
     
-    private void obradiGrupu(String naredba) {
-        String korisnik = konfiguracija.getKorisnik();
+    private void obradiGrupu(String korisnickoIme, String naredba) {
+        BrojacVremena brojacVremena = new BrojacVremena();
+
+        String korisnikGrupe = konfiguracija.getKorisnik();
         String lozinka = konfiguracija.getLozinka();
         switch(naredba) {
             case "DODAJ;":
-                obradiDodajGrupu(korisnik, lozinka);
+                obradiDodajGrupu(korisnikGrupe, lozinka);
                 break;
             case "PREKID;":
-                obradiPrekidGrupe(korisnik, lozinka);
+                obradiPrekidGrupe(korisnikGrupe, lozinka);
                 break; 
             case "KRENI;":
-                obradiKreniGrupa(korisnik, lozinka);
+                obradiKreniGrupa(korisnikGrupe, lozinka);
                 break;
             case "PAUZA;":
-                obradiPauzaGrupa(korisnik, lozinka);
+                obradiPauzaGrupa(korisnikGrupe, lozinka);
                 break;
             case "STANJE;":
-                obradiStanjeGrupa(korisnik, lozinka);
+                obradiStanjeGrupa(korisnikGrupe, lozinka);
         }
+        
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "Obrada grupe, naredba:" + naredba, "SOCKET",
+                socket.getInetAddress().getHostName(), socket.getInetAddress().getHostAddress(),
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
     }
     
     private void obradiDodajGrupu(String korisnik, String lozinka) {
-        if (!registriranaGrupa(korisnik, lozinka) && port.registrirajGrupu(korisnik, lozinka)) {
+        if (!GrupeUtils.registriranaGrupa() && port.registrirajGrupu(korisnik, lozinka)) {
             dodajPoruku(Statusi.OK_20);
         } else {
             dodajPoruku(Statusi.ERR_20);
@@ -120,7 +131,7 @@ public class RadnaDretva extends Thread {
     }
     
     private void obradiPrekidGrupe(String korisnik, String lozinka) {
-        if (!deregistriranaGrupa(korisnik, lozinka) && port.deregistrirajGrupu(korisnik, lozinka)) {
+        if (!GrupeUtils.deregistriranaGrupa() && port.deregistrirajGrupu(korisnik, lozinka)) {
             dodajPoruku(Statusi.OK_20);
         } else {
             dodajPoruku(Statusi.ERR_21);
@@ -128,7 +139,7 @@ public class RadnaDretva extends Thread {
     }
     
     private void obradiKreniGrupa(String korisnik, String lozinka) {
-        if (!aktiviranaGrupa(korisnik, lozinka) && port.aktivirajGrupu(korisnik, lozinka)) {
+        if (!GrupeUtils.aktiviranaGrupa() && port.aktivirajGrupu(korisnik, lozinka)) {
             dodajPoruku(Statusi.OK_20);
         } else {
             dodajPoruku(Statusi.ERR_21);
@@ -136,27 +147,11 @@ public class RadnaDretva extends Thread {
     }
     
     private void obradiPauzaGrupa(String korisnik, String lozinka) {
-        if (!blokiranaGrupa(korisnik, lozinka) && port.blokirajGrupu(korisnik, lozinka)) {
+        if (!GrupeUtils.blokiranaGrupa() && port.blokirajGrupu(korisnik, lozinka)) {
             dodajPoruku(Statusi.OK_20);
         } else {
             dodajPoruku(Statusi.ERR_21);
         }
-    }
-    
-    private boolean registriranaGrupa(String korisnik, String lozinka) {
-        return port.dajStatusGrupe(korisnik, lozinka) == REGISTRIRAN;
-    }
-   
-    private boolean deregistriranaGrupa(String korisnik, String lozinka) {
-        return port.dajStatusGrupe(korisnik, lozinka) == DEREGISTRIRAN;
-    }
-    
-    private boolean aktiviranaGrupa(String korisnik, String lozinka) {
-        return port.dajStatusGrupe(korisnik, lozinka) == AKTIVAN;
-    }
-    
-    private boolean blokiranaGrupa(String korisnik, String lozinka) {
-        return port.dajStatusGrupe(korisnik, lozinka) == BLOKIRAN;
     }
     
     private void obradiStanjeGrupa(String korisnik, String lozinka) {

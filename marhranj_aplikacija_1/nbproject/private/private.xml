@@ -3,10 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_1/src/java/org/foi/nwtis/marhranj/web/dretve/PreuzimanjeAviona.java</file>
-            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_1/src/java/org/foi/nwtis/marhranj/utils/PretvaracVremena.java</file>
-            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_1/src/java/org/foi/nwtis/marhranj/ws/serveri/AIRP2WS.java</file>
-            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_1/src/java/org/foi/nwtis/marhranj/PisacDnevnika.java</file>
+            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_1/web/WEB-INF/NWTiS.config.xml</file>
+            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_1/build/generated-sources/jax-ws/org/foi/nwtis/marhranj/ws/servisi/Avion.java</file>
+            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_1/src/java/org/foi/nwtis/marhranj/utils/GrupeUtils.java</file>
+            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_1/src/java/org/foi/nwtis/marhranj/web/ObradaKorisnika.java</file>
+            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_1/src/java/org/foi/nwtis/marhranj/web/zrna/Aerodrom.java</file>
+            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_1/src/java/org/foi/nwtis/marhranj/rest/serveri/AIRP2REST.java</file>
+            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_1/src/java/org/foi/nwtis/marhranj/web/ObradaDnevnika.java</file>
+            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_1/src/java/org/foi/nwtis/marhranj/web/zrna/MojAvionLeti.java</file>
         </group>
     </open-files>
 </project-private>

@@ -14,15 +14,22 @@ import java.util.List;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.annotation.Resource;
 import javax.jws.WebService;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.ws.WebServiceContext;
+import javax.xml.ws.handler.MessageContext;
+import org.foi.nwtis.marhranj.BrojacVremena;
+import org.foi.nwtis.marhranj.PisacDnevnika;
 import org.foi.nwtis.marhranj.konfiguracije.GeneralnaKonfiguracija;
 import org.foi.nwtis.marhranj.utils.BPUtils;
 import org.foi.nwtis.marhranj.utils.PretvaracVremena;
 import org.foi.nwtis.marhranj.web.KonektorBazePodataka;
 import org.foi.nwtis.marhranj.web.slusaci.SlusacAplikacije;
 import org.foi.nwtis.marhranj.web.zrna.Korisnik;
+import org.foi.nwtis.marhranj.web.zrna.MojAvionLeti;
 import org.foi.nwtis.rest.klijenti.OWMKlijent;
 import org.foi.nwtis.rest.podaci.AvionLeti;
 import org.foi.nwtis.rest.podaci.MeteoPodaci;
@@ -37,6 +44,12 @@ import org.foi.nwtis.rest.podaci.MeteoPodaci;
 @WebService(serviceName = "AIRP2WS")
 public class AIRP2WS {
 
+    private final PisacDnevnika pisacDnevnika = new PisacDnevnika();
+
+    @Resource
+    private WebServiceContext context;
+
+    
     /**
      * SOAP metoda koja vraća zadnje podatke o avionu poletjelog s navedenog aerodroma
      *
@@ -46,9 +59,14 @@ public class AIRP2WS {
      * @return
      */
     @WebMethod(operationName = "zadnjiPodaciOAvionuSAerodroma")
-    public AvionLeti zadnjiPodaciOAvionuSAerodroma(@WebParam(name = "icao") String icao, 
+    public AvionLeti zadnjiPodaciOAvionuSAerodroma(@WebParam(name = "icao") String icao,
             @WebParam(name = "korisnickoIme") String korisnickoIme, @WebParam(name = "lozinka") String lozinka) {
-        AvionLeti avion = new AvionLeti();
+
+        BrojacVremena brojacVremena = new BrojacVremena();
+
+        HttpServletRequest request = (HttpServletRequest) context.getMessageContext().get(MessageContext.SERVLET_REQUEST);
+
+        MojAvionLeti avion = new MojAvionLeti();
         if (Objects.nonNull(icao) && BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
             try (Connection con = KonektorBazePodataka.dajKonekciju();
                     PreparedStatement dajAvion = con.prepareStatement("SELECT * FROM AIRPLANES WHERE ESTDEPARTUREAIRPORT = ? ORDER BY `STORED` DESC LIMIT 1");) {
@@ -60,7 +78,7 @@ public class AIRP2WS {
                 avion = BPUtils.dohvatiAvioneIzResultSeta(rezultat)
                         .stream()
                         .findFirst()
-                        .orElse(new AvionLeti());
+                        .orElse(new MojAvionLeti());
 
                 rezultat.close();
             } catch (SQLException ex) {
@@ -68,11 +86,16 @@ public class AIRP2WS {
             }
         }
 
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "SOAP servis za dohvacanje zadnjih podataka o avionu s aerodroma", "SOAP",
+                request.getRemoteHost(), request.getRemoteAddr(),
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
         return avion;
     }
 
     /**
-     * SOAP metoda koja vraća zadnje podatke o N aviona poletjelih s navedenog aerodroma
+     * SOAP metoda koja vraća zadnje podatke o N aviona poletjelih s navedenog
+     * aerodroma
      *
      * @param icao
      * @param korisnickoIme
@@ -80,9 +103,14 @@ public class AIRP2WS {
      * @return
      */
     @WebMethod(operationName = "zadnjiPodaciOAvionimaSAerodroma")
-    public List<AvionLeti> zadnjiPodaciOAvionimaSAerodroma(@WebParam(name = "icao") String icao, @WebParam(name = "kolicinaAviona") int kolicinaAviona, 
+    public List<MojAvionLeti> zadnjiPodaciOAvionimaSAerodroma(@WebParam(name = "icao") String icao, @WebParam(name = "kolicinaAviona") int kolicinaAviona,
             @WebParam(name = "korisnickoIme") String korisnickoIme, @WebParam(name = "lozinka") String lozinka) {
-        List<AvionLeti> avioni = new ArrayList<>();
+
+        BrojacVremena brojacVremena = new BrojacVremena();
+
+        HttpServletRequest request = (HttpServletRequest) context.getMessageContext().get(MessageContext.SERVLET_REQUEST);
+
+        List<MojAvionLeti> avioni = new ArrayList<>();
         if (Objects.nonNull(icao) && BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
             try (Connection con = KonektorBazePodataka.dajKonekciju();
                     PreparedStatement dajAvione = con.prepareStatement("SELECT * FROM AIRPLANES WHERE ESTDEPARTUREAIRPORT = ? ORDER BY `STORED` DESC LIMIT ?");) {
@@ -100,6 +128,10 @@ public class AIRP2WS {
             }
         }
 
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "SOAP servis za dohvacanje zadnjih podataka o avionima s aerodroma", "SOAP",
+                request.getRemoteHost(), request.getRemoteAddr(),
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
         return avioni;
     }
 
@@ -115,9 +147,14 @@ public class AIRP2WS {
      * @return
      */
     @WebMethod(operationName = "dajAvionePoletjeleSAerodroma")
-    public List<AvionLeti> dajAvionePoletjeleSAerodroma(@WebParam(name = "icao") String icao, @WebParam(name = "odVremena") String odVremena, @WebParam(name = "doVremena") String doVremena, 
+    public List<MojAvionLeti> dajAvionePoletjeleSAerodroma(@WebParam(name = "icao") String icao, @WebParam(name = "odVremena") String odVremena, @WebParam(name = "doVremena") String doVremena,
             @WebParam(name = "korisnickoIme") String korisnickoIme, @WebParam(name = "lozinka") String lozinka) {
-        List<AvionLeti> poletjeliAvioni = new ArrayList<>();
+
+        BrojacVremena brojacVremena = new BrojacVremena();
+
+        HttpServletRequest request = (HttpServletRequest) context.getMessageContext().get(MessageContext.SERVLET_REQUEST);
+
+        List<MojAvionLeti> poletjeliAvioni = new ArrayList<>();
 
         if (Objects.nonNull(icao) && Objects.nonNull(odVremena) && Objects.nonNull(doVremena) && BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
             try (Connection con = KonektorBazePodataka.dajKonekciju();
@@ -137,12 +174,16 @@ public class AIRP2WS {
             }
         }
 
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "SOAP servis za dohvacanje aviona poletjelih s aerodroma", "SOAP",
+                request.getRemoteHost(), request.getRemoteAddr(),
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
         return poletjeliAvioni;
     }
 
     /**
-     * SOAP metoda koja vraća letove aviona prema icao24 kodu
-     * između odVremena i doVremena
+     * SOAP metoda koja vraća letove aviona prema icao24 kodu između odVremena i
+     * doVremena
      *
      * @param icao24
      * @param odVremena
@@ -152,9 +193,14 @@ public class AIRP2WS {
      * @return
      */
     @WebMethod(operationName = "dajLetoveAvionaUVremenskomIntervalu")
-    public List<AvionLeti> dajLetoveAvionaUVremenskomIntervalu(@WebParam(name = "icao24") String icao24, @WebParam(name = "odVremena") String odVremena, @WebParam(name = "doVremena") String doVremena, 
+    public List<MojAvionLeti> dajLetoveAvionaUVremenskomIntervalu(@WebParam(name = "icao24") String icao24, @WebParam(name = "odVremena") String odVremena, @WebParam(name = "doVremena") String doVremena,
             @WebParam(name = "korisnickoIme") String korisnickoIme, @WebParam(name = "lozinka") String lozinka) {
-        List<AvionLeti> poletjeliAvioni = new ArrayList<>();
+
+        BrojacVremena brojacVremena = new BrojacVremena();
+
+        HttpServletRequest request = (HttpServletRequest) context.getMessageContext().get(MessageContext.SERVLET_REQUEST);
+
+        List<MojAvionLeti> poletjeliAvioni = new ArrayList<>();
 
         if (Objects.nonNull(icao24) && Objects.nonNull(odVremena) && Objects.nonNull(doVremena) && BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
             try (Connection con = KonektorBazePodataka.dajKonekciju();
@@ -174,12 +220,16 @@ public class AIRP2WS {
             }
         }
 
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "SOAP servis za dohvacanje skom letova aviona u vremenskom intervalu", "SOAP",
+                request.getRemoteHost(), request.getRemoteAddr(),
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
         return poletjeliAvioni;
     }
 
     /**
-     * SOAP metoda koja vraća nazive aerodroma kroz koje je avion prolazio
-     * u vremenskom periodu
+     * SOAP metoda koja vraća nazive aerodroma kroz koje je avion prolazio u
+     * vremenskom periodu
      *
      * @param icao24
      * @param odVremena
@@ -189,11 +239,16 @@ public class AIRP2WS {
      * @return
      */
     @WebMethod(operationName = "dajNaziveAerodromaKrozKojeJeAvionProlazio")
-    public List<String> dajNaziveAerodromaKrozKojeJeAvionProlazio(@WebParam(name = "icao24") String icao24, @WebParam(name = "odVremena") String odVremena, @WebParam(name = "doVremena") String doVremena, 
+    public List<String> dajNaziveAerodromaKrozKojeJeAvionProlazio(@WebParam(name = "icao24") String icao24, @WebParam(name = "odVremena") String odVremena, @WebParam(name = "doVremena") String doVremena,
             @WebParam(name = "korisnickoIme") String korisnickoIme, @WebParam(name = "lozinka") String lozinka) {
+
+        BrojacVremena brojacVremena = new BrojacVremena();
+
+        HttpServletRequest request = (HttpServletRequest) context.getMessageContext().get(MessageContext.SERVLET_REQUEST);
+
         List<String> naziviAerodroma = new ArrayList<>();
 
-        if (Objects.nonNull(icao24) && Objects.nonNull(odVremena) && Objects.nonNull(doVremena) 
+        if (Objects.nonNull(icao24) && Objects.nonNull(odVremena) && Objects.nonNull(doVremena)
                 && BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
             try (Connection con = KonektorBazePodataka.dajKonekciju();
                     PreparedStatement dajAerodrom = con.prepareStatement("SELECT NAME FROM AIRPLANES, MYAIRPORTS WHERE ICAO24 = ? AND IDENT = ESTDEPARTUREAIRPORT AND FIRSTSEEN BETWEEN ? AND ? ORDER BY FIRSTSEEN DESC");) {
@@ -214,6 +269,10 @@ public class AIRP2WS {
             }
         }
 
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "SOAP servis za dohvacanje naziva aeorodroma kroz koje je avion prolazio", "SOAP",
+                request.getRemoteHost(), request.getRemoteAddr(),
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
         return naziviAerodroma;
     }
 
@@ -226,8 +285,13 @@ public class AIRP2WS {
      * @return
      */
     @WebMethod(operationName = "dajMeteoPodatkeZaAerodrom")
-    public MeteoPodaci dajMeteoPodatkeZaAerodrom(@WebParam(name = "icao") String icao, 
+    public MeteoPodaci dajMeteoPodatkeZaAerodrom(@WebParam(name = "icao") String icao,
             @WebParam(name = "korisnickoIme") String korisnickoIme, @WebParam(name = "lozinka") String lozinka) {
+
+        BrojacVremena brojacVremena = new BrojacVremena();
+
+        HttpServletRequest request = (HttpServletRequest) context.getMessageContext().get(MessageContext.SERVLET_REQUEST);
+
         MeteoPodaci meteoPodaci = new MeteoPodaci();
 
         if (Objects.nonNull(icao) && BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
@@ -249,6 +313,10 @@ public class AIRP2WS {
             }
         }
 
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "SOAP servis za dohvacanje meteo podataka o aerodromu", "SOAP",
+                request.getRemoteHost(), request.getRemoteAddr(),
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
         return meteoPodaci;
     }
 
@@ -261,8 +329,13 @@ public class AIRP2WS {
      * @return
      */
     @WebMethod(operationName = "dodajKorisnika")
-    public boolean dodajKorisnika(@WebParam(name = "korisnik") Korisnik korisnik, 
+    public boolean dodajKorisnika(@WebParam(name = "korisnik") Korisnik korisnik,
             @WebParam(name = "korisnickoIme") String korisnickoIme, @WebParam(name = "lozinka") String lozinka) {
+
+        BrojacVremena brojacVremena = new BrojacVremena();
+
+        HttpServletRequest request = (HttpServletRequest) context.getMessageContext().get(MessageContext.SERVLET_REQUEST);
+
         if (Objects.nonNull(korisnik) && BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
             try (Connection con = KonektorBazePodataka.dajKonekciju();
                     PreparedStatement dodajKorisnika = con.prepareStatement("INSERT INTO KORISNICI(`ime`, `prezime`, `korisnickoIme`,`lozinka`,`email`) VALUES (?, ?, ?, ?, ?, ?);");) {
@@ -279,6 +352,10 @@ public class AIRP2WS {
             }
         }
 
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "SOAP servis za dodavanje korisnika", "SOAP",
+                request.getRemoteHost(), request.getRemoteAddr(),
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
         return false;
     }
 
@@ -291,8 +368,13 @@ public class AIRP2WS {
      * @return
      */
     @WebMethod(operationName = "azurirajKorisnika")
-    public boolean azurirajKorisnika(@WebParam(name = "korisnik") Korisnik korisnik, 
+    public boolean azurirajKorisnika(@WebParam(name = "korisnik") Korisnik korisnik,
             @WebParam(name = "korisnickoIme") String korisnickoIme, @WebParam(name = "lozinka") String lozinka) {
+
+        BrojacVremena brojacVremena = new BrojacVremena();
+
+        HttpServletRequest request = (HttpServletRequest) context.getMessageContext().get(MessageContext.SERVLET_REQUEST);
+
         if (Objects.nonNull(korisnik) && BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
             try (Connection con = KonektorBazePodataka.dajKonekciju();
                     PreparedStatement azurirajKorisnika = con.prepareStatement("UPDATE KORISNICI SET `ime` = ?, `prezime` = ?, `korisnickoIme` = ?,`lozinka` = ?,`email`= ? WHERE id = ?;");) {
@@ -310,6 +392,10 @@ public class AIRP2WS {
             }
         }
 
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "SOAP servis za azuriranje korisnika", "SOAP",
+                request.getRemoteHost(), request.getRemoteAddr(),
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
         return false;
     }
 
@@ -322,30 +408,39 @@ public class AIRP2WS {
      */
     @WebMethod(operationName = "dohvatiKorisnike")
     public List<Korisnik> dohvatiKorisnike(@WebParam(name = "korisnickoIme") String korisnickoIme, @WebParam(name = "lozinka") String lozinka) {
+
+        BrojacVremena brojacVremena = new BrojacVremena();
+
+        HttpServletRequest request = (HttpServletRequest) context.getMessageContext().get(MessageContext.SERVLET_REQUEST);
+
         List<Korisnik> korisnici = new ArrayList<>();
         if (BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
-            try (Connection con = KonektorBazePodataka.dajKonekciju(); 
-                PreparedStatement dajSveKorisnike = con.prepareStatement("SELECT * FROM korisnici");
-                ResultSet rezultat = dajSveKorisnike.executeQuery();) {
-            
-            while(rezultat.next()) {
-                
-                Korisnik korisnik = new Korisnik(
-                   rezultat.getInt("id"), 
-                   rezultat.getString("ime"), 
-                   rezultat.getString("prezime"),
-                   rezultat.getString("korisnickoIme"),
-                   rezultat.getString("lozinka"),
-                   rezultat.getString("email")
-                );
+            try (Connection con = KonektorBazePodataka.dajKonekciju();
+                    PreparedStatement dajSveKorisnike = con.prepareStatement("SELECT * FROM korisnici");
+                    ResultSet rezultat = dajSveKorisnike.executeQuery();) {
 
-                korisnici.add(korisnik);
-           }
-        } catch(SQLException ex) {
-            Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
-        }
+                while (rezultat.next()) {
+
+                    Korisnik korisnik = new Korisnik(
+                            rezultat.getInt("id"),
+                            rezultat.getString("ime"),
+                            rezultat.getString("prezime"),
+                            rezultat.getString("korisnickoIme"),
+                            rezultat.getString("lozinka"),
+                            rezultat.getString("email")
+                    );
+
+                    korisnici.add(korisnik);
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            }
         }
         
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "SOAP servis za dohvacanje svih korisnika", "SOAP", 
+                request.getRemoteHost(), request.getRemoteAddr(), 
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
         return korisnici;
     }
 

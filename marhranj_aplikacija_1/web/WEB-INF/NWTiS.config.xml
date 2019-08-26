@@ -5,7 +5,7 @@
 <entry key="server.database">jdbc:mysql://localhost:3306/</entry>
 <entry key="admin.username">root</entry>
 <entry key="admin.password">MySqlPassword717</entry>
-<entry key="admin.database">nwtis_marhranj_bp1</entry>
+<entry key="admin.database">nwtis_marhranj_bp_1</entry>
 <entry key="user.username">nwtis_g1</entry>
 <entry key="user.password">g1_nwtis</entry>
 <entry key="user.database">nwtis_marhranj_bp_1</entry>

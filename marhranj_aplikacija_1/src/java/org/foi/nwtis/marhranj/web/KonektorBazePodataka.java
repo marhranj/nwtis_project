@@ -23,7 +23,7 @@ import org.foi.nwtis.marhranj.web.slusaci.SlusacAplikacije;
  */
 public final class KonektorBazePodataka {
     
-    private static Connection konekcija;
+    private static volatile Connection konekcija;
     private static GeneralnaKonfiguracija konfiguracija;
     
     /**
@@ -42,7 +42,7 @@ public final class KonektorBazePodataka {
      * Metoda koja uspostavlja konekciju na bazu podataka
      * 
      */
-    private static void uspostaviKonekcijuNaBazuPodataka() throws SQLException {
+    private static synchronized void uspostaviKonekcijuNaBazuPodataka() throws SQLException {
         postaviKonfiguraciju();
         try {
             Class.forName(konfiguracija.getMySqlDriver());

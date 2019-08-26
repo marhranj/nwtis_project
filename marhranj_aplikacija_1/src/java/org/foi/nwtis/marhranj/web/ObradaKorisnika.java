@@ -31,6 +31,9 @@ public class ObradaKorisnika implements Serializable {
     
     public ObradaKorisnika() {
         azurirajuKonfiguraciju();
+    }
+    
+    public void init() {
         dohvatiKorisnikeIzBaze();
     }
 

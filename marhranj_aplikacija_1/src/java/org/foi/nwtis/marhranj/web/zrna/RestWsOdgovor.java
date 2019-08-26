@@ -25,6 +25,14 @@ public class RestWsOdgovor {
     public void setOdgovor(Object odgovor) {
         this.odgovor = odgovor;
     }
+    
+    /**
+     *
+     * @return 
+     */
+    public Object getOdgovor() {
+        return odgovor;
+    }
 
     /**
      *

@@ -36,13 +36,16 @@ public class ObradaDnevnika implements Serializable {
 
     private String poruka = "";
 
-    private final List<ZapisDnevnika> sviZapisiDnevnika;
-    private List<ZapisDnevnika> zapisiDnevnika;
+    private List<ZapisDnevnika> sviZapisiDnevnika = new ArrayList<>();
+    private List<ZapisDnevnika> zapisiDnevnika = new ArrayList<>();
 
     private GeneralnaKonfiguracija konfiguracija;
 
     public ObradaDnevnika() {
         azurirajuKonfiguraciju();
+    }
+    
+    public void init() {
         sviZapisiDnevnika = dohvatiZapiseDnevnikaIzBaze();
         zapisiDnevnika = new ArrayList<>(sviZapisiDnevnika);
     }

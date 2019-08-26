@@ -4,37 +4,28 @@ import java.net.Socket;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.foi.nwtis.marhranj.web.KonektorBazePodataka;
 
 public class PisacDnevnika {
 
-    private static long vrijemePrijema;
-    
-    public void upisUDnevnik(String korisnik, String radnja, String vrsta, Socket socket) {
-        long trajanjeObrade = (long) System.currentTimeMillis() - vrijemePrijema;
-
-        String upit = "INSERT INTO dnevnik (korisnik, url, ipAdresa, trajanjeObrade, vrijemePrijema, radnja, vrsta)"
-                + " VALUES ('?, ?, ?, ?, ?, ?, ?, ?)";
-         
+    public void upisUDnevnik(String korisnik, String naredba, String vrsta, String url, String ip, long trajanje) {
         try (Connection con = KonektorBazePodataka.dajKonekciju();
-                PreparedStatement stmt = con.prepareStatement(upit);) {
-            stmt.setString(0, korisnik);
-            stmt.setString(1, socket.getInetAddress().getHostAddress());
-            stmt.setString(2, socket.getInetAddress().toString());
-            stmt.setLong(3, trajanjeObrade);
-            stmt.setLong(4, vrijemePrijema);
-            stmt.setString(5, radnja);
+                PreparedStatement stmt = con.prepareStatement("INSERT INTO DNEVNIK (KORISNIK, VRIJEME, NAREDBA, URL, IP, VRSTA, TRAJANJE) "
+                        + "VALUES (?, ?, ?, ?, ?, ?, ?)");) {
+            stmt.setString(1, korisnik);
+            stmt.setTimestamp(2, new Timestamp(System.currentTimeMillis()));
+            stmt.setString(3, naredba);
+            stmt.setString(4, url);
+            stmt.setString(5, ip);
             stmt.setString(6, vrsta);
-            stmt.executeUpdate(upit);
+            stmt.setLong(7, trajanje);
+            stmt.execute();
         } catch (SQLException ex) {
             Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public void postaviPocetnoVrijeme() {
-        vrijemePrijema = (long) System.currentTimeMillis();
     }
     
 }
