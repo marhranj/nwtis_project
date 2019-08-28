@@ -443,6 +443,16 @@ public class AIRP2WS {
 
         return korisnici;
     }
+    
+    /**
+     * SOAP metoda koja vraća port socketa
+     *
+     * @return
+     */
+    @WebMethod(operationName = "dohvatiPortSocketa")
+    public int dohvatiPortSocketa() {
+        return getKonfiguracija().getPort();
+    }
 
     /**
      * @return

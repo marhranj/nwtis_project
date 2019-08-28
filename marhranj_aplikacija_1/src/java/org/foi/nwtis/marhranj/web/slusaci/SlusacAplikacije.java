@@ -40,7 +40,7 @@ public class SlusacAplikacije implements ServletContextListener {
     public void contextInitialized(ServletContextEvent servletContextEvent) {        
         servletContext = servletContextEvent.getServletContext();
         String putanja = servletContext.getRealPath("/WEB-INF");
-        String datoteka = putanja + File.separator + servletContext.getInitParameter("konfiguracija");
+        String datoteka = putanja + File.separator + servletContext.getInitParameter(KONFIGURACIJA_IME_ATRIBUTA);
             
         GeneralnaKonfiguracija konfiguracija = new GeneralnaKonfiguracija(datoteka);
         servletContext.setAttribute(KONFIGURACIJA_IME_ATRIBUTA, konfiguracija);
