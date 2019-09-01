@@ -70,7 +70,7 @@ public class RadnaDretva extends Thread {
     
     private void obradiServer(String korisnickoIme, String naredba) {
         BrojacVremena brojacVremena = new BrojacVremena();
-        
+        poruka = "";
         switch(naredba) {
             case "PAUZA;":
                 obradiPauzaServer();
@@ -97,7 +97,7 @@ public class RadnaDretva extends Thread {
     
     private void obradiGrupu(String korisnickoIme, String naredba) {
         BrojacVremena brojacVremena = new BrojacVremena();
-
+        poruka = "";
         String korisnikGrupe = konfiguracija.getKorisnik();
         String lozinka = konfiguracija.getLozinka();
         switch(naredba) {

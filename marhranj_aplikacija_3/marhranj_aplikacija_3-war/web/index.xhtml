@@ -1,12 +1,86 @@
-<?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
+    <f:metadata>
+        <f:viewAction action="#{serverKomunikacija.init}" />
+    </f:metadata>    
+    
     <h:head>
-        <title>Početak</title>
+        <title>Komunikacija sa serverom</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
-    <h:body>
-        <h:link outcome="pregledPosluzitelj" value="Pregled poslužitelj" />
-    </h:body>
-</html>
+    <body>
+        <h:form>
+            <h:panelGroup>
+                <h:outputLabel value="Autentikacija korisnika"/>
+                <br />
+                <br />
+                <h:outputLabel value="Korisnicko ime"/>
+                <h:inputText value="#{serverKomunikacija.korisnickoIme}"/>
+                <br />
+                <h:outputLabel value="Lozinka"/>
+                <h:inputText value="#{serverKomunikacija.lozinka}"/>
+                <br />
+                <br />
+                <h:commandButton value="Autenticiraj korisnika" action="#{serverKomunikacija.autenticirajKorisnika()}">
+                    <f:ajax execute="@form" render="@form"/>
+                </h:commandButton>
+            </h:panelGroup>
+            
+            <br/>
+            <br/>
 
+            <h:panelGroup>
+                <h:outputLabel value="Server"/>
+                <br />
+                <br />
+            </h:panelGroup>
+
+            <h:commandButton value="PAUZA" action="#{serverKomunikacija.pauzirajServer()}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+            <h:commandButton value="KRENI" action="#{serverKomunikacija.kreniServer()}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+            <h:commandButton value="PASIVNO" action="#{serverKomunikacija.pasivnoServer()}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+            <h:commandButton value="AKTIVNO" action="#{serverKomunikacija.aktivnoServer()}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+            <h:commandButton value="STANI" action="#{serverKomunikacija.staniServer()}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+            <h:commandButton value="STANJE" action="#{serverKomunikacija.stanjeServer()}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton><br/>
+            <br/>
+            <h:panelGroup>
+                <h:outputLabel value="Grupa"/>
+                <br />
+                <br />
+            </h:panelGroup>
+            <h:commandButton value="DODAJ" action="#{serverKomunikacija.registrirajGrupu()}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+            <h:commandButton value="PREKID" action="#{serverKomunikacija.deregistrirajGrupu()}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+            <h:commandButton value="KRENI" action="#{serverKomunikacija.aktivirajGrupu()}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+            <h:commandButton value="PAUZA" action="#{serverKomunikacija.blokirajGrupu()}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+            <h:commandButton value="STANJE" action="#{serverKomunikacija.stanjeGrupe()}">
+                <f:ajax execute="@form" render="@form"/>
+            </h:commandButton>
+            <br/>
+            <br/>
+            <h:outputLabel value="#{serverKomunikacija.poruka}"/>
+        </h:form>
+    </body>
+</html>
