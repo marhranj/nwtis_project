@@ -9,6 +9,10 @@ public class Korisnik {
     private String email;
     int id;
     
+    public Korisnik() {
+    
+    }
+    
     public Korisnik(int id, String ime, String prezime, String korisnickoIme, String lozinka, String email) {
         this.id = id;
         this.ime = ime;

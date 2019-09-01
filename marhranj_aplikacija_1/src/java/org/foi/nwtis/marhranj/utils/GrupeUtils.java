@@ -13,6 +13,8 @@ import org.foi.nwtis.marhranj.konfiguracije.GeneralnaKonfiguracija;
 import org.foi.nwtis.marhranj.web.slusaci.SlusacAplikacije;
 import org.foi.nwtis.marhranj.web.zrna.Aerodrom;
 import org.foi.nwtis.marhranj.web.zrna.MojAvionLeti;
+import org.foi.nwtis.marhranj.ws.servisi.AerodromStatus;
+import static org.foi.nwtis.marhranj.ws.servisi.AerodromStatus.NEPOSTOJI;
 import org.foi.nwtis.marhranj.ws.servisi.AerodromiWS;
 import org.foi.nwtis.marhranj.ws.servisi.AerodromiWS_Service;
 import org.foi.nwtis.marhranj.ws.servisi.Avion;
@@ -56,6 +58,27 @@ public final class GrupeUtils {
 
     public static boolean blokiranaGrupa() {
         return port.dajStatusGrupe(getKonfiguracija().getKorisnik(), getKonfiguracija().getLozinka()) == BLOKIRAN;
+    }
+    
+    public static boolean aktivirajAerodromGrupe(String idAerodroma) {
+        if (aktivirajGrupu()) {
+            return port.aktivirajAerodromGrupe(getKonfiguracija().getKorisnik(), getKonfiguracija().getLozinka(), idAerodroma);
+        }
+        return false;
+    }
+    
+    public static boolean blokirajAerodromGrupe(String idAerodroma) {
+        if (aktivirajGrupu()) {
+            return port.blokirajAerodromGrupe(getKonfiguracija().getKorisnik(), getKonfiguracija().getLozinka(), idAerodroma);
+        }
+        return false;
+    }
+    
+    public static AerodromStatus dajStatusAerodromaGrupe(String idAerodroma) {
+        if (aktivirajGrupu()) {
+            return port.dajStatusAerodromaGrupe(getKonfiguracija().getKorisnik(), getKonfiguracija().getLozinka(), idAerodroma);
+        }
+        return NEPOSTOJI;
     }
     
     public static List<org.foi.nwtis.marhranj.ws.servisi.Aerodrom> dohvatiSveAerodrome() {

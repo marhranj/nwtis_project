@@ -237,6 +237,71 @@ public class AIRP2REST {
 
         return new Gson().toJson(restOdgovor);
     }
+    
+     /**
+     * GET rest metoda koja dohvaća status aerodroma
+     * 
+     * @param id
+     * @param korisnickoIme
+     * @param lozinka
+     * @return
+     */
+    @GET
+    @Path("{id}/status")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String dohvatiStatusAerodroma(@PathParam("id") String id, @QueryParam("korisnickoIme") String korisnickoIme, @QueryParam("lozinka") String lozinka) {
+        RestWsOdgovor restOdgovor = new RestWsOdgovor();
+
+        BrojacVremena brojacVremena = new BrojacVremena();
+        
+        if (BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
+
+            restOdgovor.setStatus(STATUS_OK);
+            restOdgovor.setOdgovor(GrupeUtils.dajStatusAerodromaGrupe(id));
+            
+        } else {
+            restOdgovor.setStatus(STATUS_ERROR);
+            restOdgovor.setPoruka("Neuspješna autentikacija");
+        }
+        
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "GET dohvacenje statusa aerodroma", "REST", 
+                request.getRemoteHost(), request.getRemoteAddr(), 
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
+        return new Gson().toJson(restOdgovor);
+    }
+    
+    /**
+     * GET rest metoda koja dohvaća status aerodroma
+     * 
+     * @param korisnickoIme
+     * @param lozinka
+     * @return
+     */
+    @GET
+    @Path("tablicaBrojRedaka")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String dohvatiTablicaBrojRedaka(@QueryParam("korisnickoIme") String korisnickoIme, @QueryParam("lozinka") String lozinka) {
+        RestWsOdgovor restOdgovor = new RestWsOdgovor();
+
+        BrojacVremena brojacVremena = new BrojacVremena();
+        
+        if (BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
+
+            restOdgovor.setStatus(STATUS_OK);
+            restOdgovor.setOdgovor(getKonfiguracija().getTablicakBrojRedaka());
+            
+        } else {
+            restOdgovor.setStatus(STATUS_ERROR);
+            restOdgovor.setPoruka("Neuspješna autentikacija");
+        }
+        
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "GET dohvacenje tablice broj redaka", "REST", 
+                request.getRemoteHost(), request.getRemoteAddr(), 
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
+        return new Gson().toJson(restOdgovor);
+    }
 
     /**
      * POST rest metoda koja dodaje novi aerodrom u tablicu MYAIRPORTS na
@@ -391,6 +456,70 @@ public class AIRP2REST {
         }
         
         pisacDnevnika.upisUDnevnik(korisnickoIme, "POST dodavanje aviona aerodromu", "REST", 
+                request.getRemoteHost(), request.getRemoteAddr(), 
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
+        return new Gson().toJson(restOdgovor);
+    }
+    
+    /**
+     * POST rest metoda koja aktivira aerodroma grupe
+     *
+     * @param id
+     * @param korisnickoIme
+     * @param lozinka
+     * @return
+     */
+    @POST
+    @Path("{id}/aktiviraj")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String aktivirajAerodrom(@PathParam("id") String id, @QueryParam("korisnickoIme") String korisnickoIme, @QueryParam("lozinka") String lozinka) {
+        RestWsOdgovor restOdgovor = new RestWsOdgovor();
+        
+        BrojacVremena brojacVremena = new BrojacVremena();
+
+        if (BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
+            restOdgovor.setStatus(STATUS_OK);
+            restOdgovor.setOdgovor(GrupeUtils.aktivirajAerodromGrupe(id));
+
+        } else {
+            restOdgovor.setStatus(STATUS_ERROR);
+            restOdgovor.setPoruka("Neuspješna autentikacija");
+        }
+        
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "POST aktiviranje aerodroma grupe", "REST", 
+                request.getRemoteHost(), request.getRemoteAddr(), 
+                brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+
+        return new Gson().toJson(restOdgovor);
+    }
+    
+    /**
+     * POST rest metoda koja aktivira aerodroma grupe
+     *
+     * @param id
+     * @param korisnickoIme
+     * @param lozinka
+     * @return
+     */
+    @POST
+    @Path("{id}/blokiraj")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String blokirajAerodrom(@PathParam("id") String id, @QueryParam("korisnickoIme") String korisnickoIme, @QueryParam("lozinka") String lozinka) {
+        RestWsOdgovor restOdgovor = new RestWsOdgovor();
+        
+        BrojacVremena brojacVremena = new BrojacVremena();
+
+        if (BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
+            restOdgovor.setStatus(STATUS_OK);
+            restOdgovor.setOdgovor(GrupeUtils.blokirajAerodromGrupe(id));
+
+        } else {
+            restOdgovor.setStatus(STATUS_ERROR);
+            restOdgovor.setPoruka("Neuspješna autentikacija");
+        }
+        
+        pisacDnevnika.upisUDnevnik(korisnickoIme, "POST blokiranje aerodroma grupe", "REST", 
                 request.getRemoteHost(), request.getRemoteAddr(), 
                 brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
 

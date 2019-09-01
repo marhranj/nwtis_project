@@ -100,49 +100,24 @@ public class KorisniciRestAPI {
         return gson.toJson(restOdgovor);
     }
 
-    private RestWsOdgovor dohvatiRestWsOdgovorZaAutentikaciju(String auth, Korisnik korisnik) {
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String dodajKorisnika(String json) {
         RestWsOdgovor restOdgovor = new RestWsOdgovor();
+
         try {
-            JsonObject jsonObject = (JsonObject) new JsonParser().parse(auth);
-            String authLozinka = jsonObject.get("lozinka").getAsString();
-            if (korisnik.getLozinka().equals(authLozinka)) {
+            Korisnik korisnik = gson.fromJson(json, Korisnik.class);
+            if (port.dodajKorisnika(korisnik)) {
                 restOdgovor.setStatus(STATUS_OK);
                 restOdgovor.setOdgovor(new ArrayList<>());
             } else {
                 restOdgovor.setStatus(STATUS_ERROR);
-                restOdgovor.setPoruka(String.format("Auth nije bila uspjesna, lozinka %s ne odgovara korisniku %s", authLozinka, korisnik.getKorisnickoIme()));
+                restOdgovor.setPoruka("Nije moguce dodati navedenog korisnika, mozda vec postoji u bazi podataka");
             }
         } catch (Exception e) {
             restOdgovor.setStatus(STATUS_ERROR);
             restOdgovor.setPoruka("Problem kod parsiranja ulaznih podataka");
-        }
-        return restOdgovor;
-    }
-
-    @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String dodajKorisnika(@QueryParam("korisnickoIme") String korisnickoIme, @QueryParam("lozinka") String lozinka, String json) {
-        RestWsOdgovor restOdgovor = new RestWsOdgovor();
-
-        if (ispravanKorisnik(korisnickoIme, lozinka)) {
-            try {
-                Korisnik korisnik = gson.fromJson(json, Korisnik.class);
-                if (port.dodajKorisnika(korisnik, korisnickoIme, lozinka)) {
-                    restOdgovor.setStatus(STATUS_OK);
-                    restOdgovor.setOdgovor(new ArrayList<>());
-                } else {
-                    restOdgovor.setStatus(STATUS_ERROR);
-                    restOdgovor.setPoruka("Nije moguce dodati navedenog korisnika, mozda vec postoji u bazi podataka");
-                }
-            } catch (Exception e) {
-                restOdgovor.setStatus(STATUS_ERROR);
-                restOdgovor.setPoruka("Problem kod parsiranja ulaznih podataka");
-            }
-
-        } else {
-            restOdgovor.setStatus(STATUS_ERROR);
-            restOdgovor.setPoruka("Neuspjesna autentikacija za korisnika " + korisnickoIme);
         }
 
         return gson.toJson(restOdgovor);
@@ -175,6 +150,25 @@ public class KorisniciRestAPI {
         }
 
         return gson.toJson(restOdgovor);
+    }
+
+    private RestWsOdgovor dohvatiRestWsOdgovorZaAutentikaciju(String auth, Korisnik korisnik) {
+        RestWsOdgovor restOdgovor = new RestWsOdgovor();
+        try {
+            JsonObject jsonObject = (JsonObject) new JsonParser().parse(auth);
+            String authLozinka = jsonObject.get("lozinka").getAsString();
+            if (korisnik.getLozinka().equals(authLozinka)) {
+                restOdgovor.setStatus(STATUS_OK);
+                restOdgovor.setOdgovor(new ArrayList<>());
+            } else {
+                restOdgovor.setStatus(STATUS_ERROR);
+                restOdgovor.setPoruka(String.format("Auth nije bila uspjesna, lozinka %s ne odgovara korisniku %s", authLozinka, korisnik.getKorisnickoIme()));
+            }
+        } catch (Exception e) {
+            restOdgovor.setStatus(STATUS_ERROR);
+            restOdgovor.setPoruka("Problem kod parsiranja ulaznih podataka");
+        }
+        return restOdgovor;
     }
 
     private boolean ispravanKorisnik(String korisnickoIme, String lozinka) {

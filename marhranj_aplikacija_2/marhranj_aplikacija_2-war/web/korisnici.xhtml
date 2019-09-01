@@ -1,0 +1,85 @@
+<ui:composition template="./predlozak.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:viewAction action="#{korisnici.init}" />
+    </f:metadata>    
+
+    <ui:define name="naslov">#{p['korisnici.naslov']}</ui:define>
+
+    <ui:define name="top">#{p['korisnici.naslov']}</ui:define>
+
+    <ui:define name="content">
+        <br/>
+
+        <h:form>
+            <h:commandButton action="#{lokalizacija.promjeniJezik('hr')}"
+                             value="#{p['jezik.hr']}"/>
+            <h:outputText value=" " />
+            <h:commandButton action="#{lokalizacija.promjeniJezik('en')}"
+                             value="#{p['jezik.en']}"/>
+        </h:form>
+
+        <br/>
+
+        <h:form>
+            <p:dataTable  var="korisnik" value="#{korisnici.korisnici}"
+                          paginator="true" rows="#{korisnici.tablicaBrojRedaka}" paginatorPosition="bottom">
+                <f:facet name="header">
+                    #{p['korisnici.korisnici']}
+                </f:facet>
+                <p:column>
+                    <f:facet name="header">Id</f:facet>
+                    <h:outputText value="#{korisnik.id}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['korisnici.ime']}</f:facet>
+                    <h:outputText value="#{korisnik.ime}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['korisnici.prezime']}</f:facet>
+                    <h:outputText value="#{korisnik.prezime}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['korisnici.korisnickoIme']}</f:facet>
+                    <h:outputText value="#{korisnik.korisnickoIme}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">Email</f:facet>
+                    <h:outputText value="#{korisnik.email}"></h:outputText>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+        <br/>
+
+        <h:form>
+            <label> #{p['korisnici.ime']}: </label>
+            <h:inputText value="#{korisnici.ime}"></h:inputText>
+            <br/>
+            <label> #{p['korisnici.prezime']}: </label>
+            <h:inputText value="#{korisnici.prezime}"></h:inputText>
+            <br/>
+            <label> Email:</label>
+            <h:inputText value="#{korisnici.email}"></h:inputText><br/>
+            <label>#{p['korisnici.lozinka']}: </label> 
+            <h:inputSecret value="#{korisnici.lozinka}"></h:inputSecret>
+            <br/>
+            <label>#{p['korisnici.ponovljenaLozinka']}: </label> 
+            <h:inputSecret value="#{korisnici.ponovljenaLozinka}"></h:inputSecret>
+            <br/>
+            <br/>
+            <h:outputLabel value="#{korisnici.poruka}"></h:outputLabel>
+            <br/>
+            <h:commandButton value="#{p['korisnici.azuriraj']}" action="#{korisnici.azuriraj()}">
+                <f:ajax execute="@form" render="@form" />
+            </h:commandButton>    
+            <br/>
+        </h:form>
+
+        <br/>
+    </ui:define>
+</ui:composition>

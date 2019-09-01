@@ -158,25 +158,9 @@
 </xs:sequence>
 </xs:complexType>
 
-<xs:complexType name="zadnjiPodaciOAvionuSAerodroma">
-<xs:sequence>
-<xs:element name="icao" type="xs:string" minOccurs="0"/>
-<xs:element name="korisnickoIme" type="xs:string" minOccurs="0"/>
-<xs:element name="lozinka" type="xs:string" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
-<xs:complexType name="zadnjiPodaciOAvionuSAerodromaResponse">
-<xs:sequence>
-<xs:element name="return" type="tns:avionLeti" minOccurs="0"/>
-</xs:sequence>
-</xs:complexType>
-
 <xs:complexType name="dodajKorisnika">
 <xs:sequence>
 <xs:element name="korisnik" type="tns:korisnik" minOccurs="0"/>
-<xs:element name="korisnickoIme" type="xs:string" minOccurs="0"/>
-<xs:element name="lozinka" type="xs:string" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 
@@ -194,6 +178,20 @@
 <xs:complexType name="dodajKorisnikaResponse">
 <xs:sequence>
 <xs:element name="return" type="xs:boolean"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="zadnjiPodaciOAvionuSAerodroma">
+<xs:sequence>
+<xs:element name="icao" type="xs:string" minOccurs="0"/>
+<xs:element name="korisnickoIme" type="xs:string" minOccurs="0"/>
+<xs:element name="lozinka" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="zadnjiPodaciOAvionuSAerodromaResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:avionLeti" minOccurs="0"/>
 </xs:sequence>
 </xs:complexType>
 

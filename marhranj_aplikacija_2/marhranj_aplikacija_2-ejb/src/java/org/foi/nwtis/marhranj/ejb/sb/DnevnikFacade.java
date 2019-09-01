@@ -12,7 +12,7 @@ import org.foi.nwtis.marhranj.ejb.eb.Dnevnik;
 
 /**
  *
- * @author at059201
+ * @author marhranj
  */
 @Stateless
 public class DnevnikFacade extends AbstractFacade<Dnevnik> {

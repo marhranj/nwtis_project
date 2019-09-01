@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      lang="#{lokalizacija.odabraniJezik}">
+    <h:head>
+        <title>#{p['index.naslov']}</title>
+    </h:head>
+
+    <h:body>
+        <ui:composition template="./predlozak.xhtml">
+            <ui:define name="top">
+                #{p['pregledAerodroma.pregledAerodroma']}
+            </ui:define>
+
+            <ui:define name="content">
+                <h:form>
+                    <h:commandButton value="#{p['index.hr']}" action="#{lokalizacija.odaberiJezik('hr')}" rendered="#{lokalizacija.odabraniJezik ne 'hr'}"></h:commandButton>
+                    <h:outputText rendered="#{lokalizacija.odabraniJezik ne 'hr'}" />
+                    <h:commandButton value="#{p['index.en']}" action="#{lokalizacija.odaberiJezik('en')}" rendered="#{lokalizacija.odabraniJezik ne 'en'}"></h:commandButton>
+                    <h:outputText rendered="#{lokalizacija.odabraniJezik ne 'en'}" />
+                </h:form>
+                <br/>
+                <h:form>
+                    <p:dataTable id="singleDT"  var="aerodrom" value="#{pregledAerodroma.listaAerodroma}"
+                                 paginator="true" paginatorPosition="bottom" rows="10"
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 selectionMode="single" selection="#{pregledAerodroma.odabraniAerodrom}" rowKey="#{aerodrom.icao}">
+                        <f:facet name="header">
+                            #{p['pregledAerodroma.pregledAerodroma']}
+                        </f:facet>
+                        <p:column>
+                            <f:facet name="header">Ident</f:facet>
+                            <h:outputText value="#{aerodrom.icao}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">#{p['pregledAerodroma.naziv']}</f:facet>
+                            <h:outputText value="#{aerodrom.naziv}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">#{p['pregledAerodroma.drzava']}</f:facet>
+                            <h:outputText value="#{aerodrom.drzava}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">#{p['pregledAerodroma.sirina']}</f:facet>
+                            <h:outputText value="#{aerodrom.lokacija.latitude}"></h:outputText>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">#{p['pregledAerodroma.duzina']}</f:facet>
+                            <h:outputText value="#{aerodrom.lokacija.longitude}"></h:outputText>
+                        </p:column>
+                        <f:facet name="footer">
+                            <p:commandButton process="singleDT" value="#{p['pregledAerodroma.odaberi']}"/>
+                        </f:facet>
+                    </p:dataTable>
+                </h:form>
+                <h:form>
+                    <h:outputLabel value="#{p['pregledAerodroma.dodajAerodrom']} "/>
+                    <h:inputText value="#{pregledAerodroma.noviAerodrom}">
+                    </h:inputText>
+                    <h:commandButton value="#{p['pregledAerodroma.dodaj']}" action="#{pregledAerodroma.dodajNoviAerodrom()}"></h:commandButton><br/><br/>
+                    <h:commandButton value="#{p['pregledAerodroma.aktiviraj']}" action="#{pregledAerodroma.aktivirajAerodromGrupe()}"/>
+                    <h:commandButton value="#{p['pregledAerodroma.obrisi']}" action="#{pregledAerodroma.obrisiAerodrom()}"/>
+                    <h:commandButton value="#{p['pregledAerodroma.blokiraj']}" action="#{pregledAerodroma.blorikajAerodromGrupe()}"/>
+                    <h:commandButton value="#{p['pregledAerodroma.status']}" action="#{pregledAerodroma.pregledStatusa()}"/><br/><br/>
+                    <h:commandButton value="#{p['pregledAerodroma.preuzmiMeteo']}" action="#{pregledAerodroma.meteoPodaci()}"/>
+                </h:form>
+                <h:outputLabel value="#{pregledAerodroma.odgovor}"></h:outputLabel><br/><br/>
+                <p:outputLabel value="#{p['pregledAerodroma.meteoPodaci']}"/><br/>
+                <h:outputLabel value="#{p['pregledAerodroma.vlaga']}: ">#{pregledAerodroma.meteo.humidityValue}</h:outputLabel>
+                <h:outputLabel value="#{pregledAerodroma.meteo.humidityValue}"></h:outputLabel><br/>
+                <h:outputLabel value="#{p['pregledAerodroma.temp']}: ">#{pregledAerodroma.meteo.temperatureValue}</h:outputLabel>
+                <h:outputLabel value="#{pregledAerodroma.meteo.temperatureValue}"></h:outputLabel><br/>
+                <h:outputLabel value="#{p['pregledAerodroma.vrijeme']}: ">#{pregledAerodroma.meteo.weatherValue}</h:outputLabel>
+                <h:outputLabel value="#{pregledAerodroma.meteo.weatherValue}"></h:outputLabel><br/>
+                <h:outputLabel value="#{p['pregledAerodroma.tlak']}: ">#{pregledAerodroma.meteo.pressureValue}</h:outputLabel>
+                <h:outputLabel value="#{pregledAerodroma.meteo.pressureValue}"></h:outputLabel>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

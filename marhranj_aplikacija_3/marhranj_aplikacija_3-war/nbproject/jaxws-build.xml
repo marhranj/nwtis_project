@@ -28,7 +28,7 @@
     </target>
     <target name="wsimport-client-AIRP2WS" depends="wsimport-init">
         <mkdir dir="${build.generated.dir}/jax-wsCache/AIRP2WS"/>
-        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/AIRP2WS" destdir="${build.generated.dir}/jax-wsCache/AIRP2WS" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/AIRP2WS/wsdl/localhost_8084/marhranj_aplikacija_1/AIRP2WS.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8084/marhranj_aplikacija_1/AIRP2WS?wsdl" xnocompile="true" xendorsed="true">
+        <wsimport sourcedestdir="${build.generated.dir}/jax-wsCache/AIRP2WS" destdir="${build.generated.dir}/jax-wsCache/AIRP2WS" wsdl="${basedir}/${conf-dir}xml-resources/web-service-references/AIRP2WS/wsdl/localhost_8084/marhranj_aplikacija_1/AIRP2WS.wsdl" catalog="catalog.xml" encoding="${source.encoding}" extension="true" verbose="true" fork="false" wsdlLocation="http://localhost:8084/marhranj_aplikacija_1/AIRP2WS?wsdl" xnocompile="true" xendorsed="true" package="org.foi.nwtis.marhranj.ws.serveri">
             <depends file="${basedir}/${conf-dir}xml-resources/web-service-references/AIRP2WS/wsdl/localhost_8084/marhranj_aplikacija_1/AIRP2WS.wsdl"/>
             <produces dir="${build.generated.dir}/jax-wsCache/AIRP2WS"/>
         </wsimport>

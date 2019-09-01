@@ -1,41 +1,49 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition template="./predlozak.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
 
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      lang="#{lokalizacija.odabraniJezik}">
-    <h:head>
-        <title>#{p['registracija.registracija']}</title>
-    </h:head>
+    <ui:define name="naslov">#{p['registracija.naslov']}</ui:define>
 
-    <h:body>
-        <ui:composition template="./predlozak.xhtml">
-            <ui:define name="top">
-                #{p['registracija.registracija']}
-            </ui:define>
+    <ui:define name="top">#{p['registracija.naslov']}</ui:define>
 
-            <ui:define name="content">
-                <h:form>
-                    <h:commandButton value="#{p['index.hr']}" action="#{lokalizacija.odaberiJezik('hr')}" rendered="#{lokalizacija.odabraniJezik ne 'hr'}"></h:commandButton>
-                    <h:outputText rendered="#{lokalizacija.odabraniJezik ne 'hr'}" />
-                    <h:commandButton value="#{p['index.en']}" action="#{lokalizacija.odaberiJezik('en')}" rendered="#{lokalizacija.odabraniJezik ne 'en'}"></h:commandButton>
-                    <h:outputText rendered="#{lokalizacija.odabraniJezik ne 'en'}" />
-                </h:form>
-                <br/>
-                <h:form>
-                    <label>#{p['registracija.korIme']}: </label><h:inputText value="#{registracija.korisnickoIme}"></h:inputText><br></br><br></br>
-                    <label>#{p['registracija.lozinka']}: </label> <h:inputSecret value="#{registracija.lozinka}"></h:inputSecret><br></br><br></br>
-                    <label>#{p['registracija.potvrdaLozinke']}:</label> <h:inputSecret value="#{registracija.potvrdaLozinke}"></h:inputSecret><br></br><br></br>
-                    <label>#{p['registracija.ime']}: </label><h:inputText value="#{registracija.ime}"></h:inputText><br></br><br></br>
-                    <label>#{p['registracija.prezime']}:</label><h:inputText value="#{registracija.prezime}"></h:inputText><br></br><br></br>
-                    <label> Email:</label><h:inputText value="#{registracija.email}"></h:inputText><br></br> <br></br> <br></br>
-                    <h:commandButton value="#{p['registracija.registrirajSe']}" action="#{registracija.registracijaKorisnika()}"></h:commandButton>
-                </h:form>
-                <h:outputLabel value="#{registracija.odgovor}"></h:outputLabel>
-                <h:link outcome="index" value="#{p['index.prijava']}" /><br/>
+    <ui:define name="content">
+        <br/>
 
-            </ui:define>
-        </ui:composition>
-    </h:body>
-</html>
+        <h:form>
+            <h:commandButton action="#{lokalizacija.promjeniJezik('hr')}"
+                             value="#{p['jezik.hr']}"/>
+            <h:outputText value=" " />
+            <h:commandButton action="#{lokalizacija.promjeniJezik('en')}"
+                             value="#{p['jezik.en']}"/>
+        </h:form>
+
+        <br/>
+
+        <h:form>
+            <label>#{p['registracija.korisnickoIme']}: </label>
+            <h:inputText value="#{registracija.korisnickoIme}"></h:inputText>
+            <br/>
+            <label>#{p['registracija.lozinka']}: </label> 
+            <h:inputSecret value="#{registracija.lozinka}"></h:inputSecret>
+            <br/>
+            <label>#{p['registracija.ponovljenaLozinka']}:</label> 
+            <h:inputSecret value="#{registracija.ponovljenaLozinka}"></h:inputSecret>
+            <br/>
+            <label>#{p['registracija.ime']}: </label><h:inputText value="#{registracija.ime}"></h:inputText>
+            <br/>
+            <label>#{p['registracija.prezime']}:</label><h:inputText value="#{registracija.prezime}"></h:inputText>
+            <br/>
+            <label> Email:</label><h:inputText value="#{registracija.email}"></h:inputText>
+            <br/>
+            <br/>
+            <h:commandButton value="#{p['registracija.registrirajButton']}" action="#{registracija.registriraj()}"></h:commandButton>
+        </h:form>
+        <br/>
+        <h:outputLabel value="#{registracija.poruka}"></h:outputLabel>
+        <br/>
+        <h:link outcome="prijava" value="#{p['registracija.prijava']}" />
+    </ui:define>
+</ui:composition>

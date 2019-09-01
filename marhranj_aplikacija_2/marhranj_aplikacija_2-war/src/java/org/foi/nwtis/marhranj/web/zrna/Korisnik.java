@@ -7,10 +7,13 @@ public class Korisnik {
     private String korisnickoIme;
     private String lozinka;
     private String email;
-    int id;
+    private int id;
     
-    public Korisnik(int id, String ime, String prezime, String korisnickoIme, String lozinka, String email) {
-        this.id = id;
+    public Korisnik() {
+    
+    }
+    
+    public Korisnik(String ime, String prezime, String korisnickoIme, String lozinka, String email) {
         this.ime = ime;
         this.prezime = prezime;
         this.korisnickoIme = korisnickoIme;
@@ -41,10 +44,6 @@ public class Korisnik {
     public String getLozinka() {
         return lozinka;
     }
-    
-    public int getId(){
-        return id;
-    }
 
     public void setIme(String ime) {
         this.ime = ime;
@@ -60,6 +59,10 @@ public class Korisnik {
 
     public void setLozinka(String lozinka) {
         this.lozinka = lozinka;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public void setId(int id) {

@@ -5,7 +5,7 @@
     <client name="AIRP2WS">
       <wsdl-url>http://localhost:8084/marhranj_aplikacija_1/AIRP2WS?wsdl</wsdl-url>
       <local-wsdl-file>localhost_8084/marhranj_aplikacija_1/AIRP2WS.wsdl</local-wsdl-file>
-      <package-name>org.foi.nwtis.marhranj.ws.serveri</package-name>
+      <package-name forceReplace="true">org.foi.nwtis.marhranj.ws.serveri</package-name>
       <catalog-file>catalog.xml</catalog-file>
       <wsimport-options>
         <wsimport-option>
@@ -31,6 +31,10 @@
         <wsimport-option>
           <wsimport-option-name>xendorsed</wsimport-option-name>
           <wsimport-option-value>true</wsimport-option-value>
+        </wsimport-option>
+        <wsimport-option>
+          <wsimport-option-name>package</wsimport-option-name>
+          <wsimport-option-value>org.foi.nwtis.marhranj.ws.serveri</wsimport-option-value>
         </wsimport-option>
       </wsimport-options>
     </client>

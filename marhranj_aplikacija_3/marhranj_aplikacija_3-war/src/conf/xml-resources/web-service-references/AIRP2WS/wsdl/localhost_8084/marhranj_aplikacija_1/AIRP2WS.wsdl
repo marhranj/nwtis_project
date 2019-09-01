@@ -4,11 +4,11 @@
 <xsd:import namespace="http://serveri.ws.marhranj.nwtis.foi.org/" schemaLocation="http://localhost:8084/marhranj_aplikacija_1/AIRP2WS?xsd=1"/>
 </xsd:schema>
 </types>
-<message name="dohvatiPortSocketa">
-<part name="parameters" element="tns:dohvatiPortSocketa"/>
+<message name="dodajKorisnika">
+<part name="parameters" element="tns:dodajKorisnika"/>
 </message>
-<message name="dohvatiPortSocketaResponse">
-<part name="parameters" element="tns:dohvatiPortSocketaResponse"/>
+<message name="dodajKorisnikaResponse">
+<part name="parameters" element="tns:dodajKorisnikaResponse"/>
 </message>
 <message name="zadnjiPodaciOAvionuSAerodroma">
 <part name="parameters" element="tns:zadnjiPodaciOAvionuSAerodroma"/>
@@ -46,11 +46,17 @@
 <message name="dajMeteoPodatkeZaAerodromResponse">
 <part name="parameters" element="tns:dajMeteoPodatkeZaAerodromResponse"/>
 </message>
-<message name="dodajKorisnika">
-<part name="parameters" element="tns:dodajKorisnika"/>
+<message name="dohvatiKorisnike">
+<part name="parameters" element="tns:dohvatiKorisnike"/>
 </message>
-<message name="dodajKorisnikaResponse">
-<part name="parameters" element="tns:dodajKorisnikaResponse"/>
+<message name="dohvatiKorisnikeResponse">
+<part name="parameters" element="tns:dohvatiKorisnikeResponse"/>
+</message>
+<message name="dohvatiPortSocketa">
+<part name="parameters" element="tns:dohvatiPortSocketa"/>
+</message>
+<message name="dohvatiPortSocketaResponse">
+<part name="parameters" element="tns:dohvatiPortSocketaResponse"/>
 </message>
 <message name="azurirajKorisnika">
 <part name="parameters" element="tns:azurirajKorisnika"/>
@@ -58,16 +64,10 @@
 <message name="azurirajKorisnikaResponse">
 <part name="parameters" element="tns:azurirajKorisnikaResponse"/>
 </message>
-<message name="dohvatiKorisnike">
-<part name="parameters" element="tns:dohvatiKorisnike"/>
-</message>
-<message name="dohvatiKorisnikeResponse">
-<part name="parameters" element="tns:dohvatiKorisnikeResponse"/>
-</message>
 <portType name="AIRP2WS">
-<operation name="dohvatiPortSocketa">
-<input wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dohvatiPortSocketaRequest" message="tns:dohvatiPortSocketa"/>
-<output wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dohvatiPortSocketaResponse" message="tns:dohvatiPortSocketaResponse"/>
+<operation name="dodajKorisnika">
+<input wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dodajKorisnikaRequest" message="tns:dodajKorisnika"/>
+<output wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dodajKorisnikaResponse" message="tns:dodajKorisnikaResponse"/>
 </operation>
 <operation name="zadnjiPodaciOAvionuSAerodroma">
 <input wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/zadnjiPodaciOAvionuSAerodromaRequest" message="tns:zadnjiPodaciOAvionuSAerodroma"/>
@@ -93,22 +93,22 @@
 <input wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dajMeteoPodatkeZaAerodromRequest" message="tns:dajMeteoPodatkeZaAerodrom"/>
 <output wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dajMeteoPodatkeZaAerodromResponse" message="tns:dajMeteoPodatkeZaAerodromResponse"/>
 </operation>
-<operation name="dodajKorisnika">
-<input wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dodajKorisnikaRequest" message="tns:dodajKorisnika"/>
-<output wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dodajKorisnikaResponse" message="tns:dodajKorisnikaResponse"/>
+<operation name="dohvatiKorisnike">
+<input wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dohvatiKorisnikeRequest" message="tns:dohvatiKorisnike"/>
+<output wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dohvatiKorisnikeResponse" message="tns:dohvatiKorisnikeResponse"/>
+</operation>
+<operation name="dohvatiPortSocketa">
+<input wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dohvatiPortSocketaRequest" message="tns:dohvatiPortSocketa"/>
+<output wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dohvatiPortSocketaResponse" message="tns:dohvatiPortSocketaResponse"/>
 </operation>
 <operation name="azurirajKorisnika">
 <input wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/azurirajKorisnikaRequest" message="tns:azurirajKorisnika"/>
 <output wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/azurirajKorisnikaResponse" message="tns:azurirajKorisnikaResponse"/>
 </operation>
-<operation name="dohvatiKorisnike">
-<input wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dohvatiKorisnikeRequest" message="tns:dohvatiKorisnike"/>
-<output wsam:Action="http://serveri.ws.marhranj.nwtis.foi.org/AIRP2WS/dohvatiKorisnikeResponse" message="tns:dohvatiKorisnikeResponse"/>
-</operation>
 </portType>
 <binding name="AIRP2WSPortBinding" type="tns:AIRP2WS">
 <soap:binding transport="http://schemas.xmlsoap.org/soap/http" style="document"/>
-<operation name="dohvatiPortSocketa">
+<operation name="dodajKorisnika">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -171,7 +171,16 @@
 <soap:body use="literal"/>
 </output>
 </operation>
-<operation name="dodajKorisnika">
+<operation name="dohvatiKorisnike">
+<soap:operation soapAction=""/>
+<input>
+<soap:body use="literal"/>
+</input>
+<output>
+<soap:body use="literal"/>
+</output>
+</operation>
+<operation name="dohvatiPortSocketa">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>
@@ -181,15 +190,6 @@
 </output>
 </operation>
 <operation name="azurirajKorisnika">
-<soap:operation soapAction=""/>
-<input>
-<soap:body use="literal"/>
-</input>
-<output>
-<soap:body use="literal"/>
-</output>
-</operation>
-<operation name="dohvatiKorisnike">
 <soap:operation soapAction=""/>
 <input>
 <soap:body use="literal"/>

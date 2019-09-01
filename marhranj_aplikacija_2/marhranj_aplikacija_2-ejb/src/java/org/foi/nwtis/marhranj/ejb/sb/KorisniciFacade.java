@@ -12,7 +12,7 @@ import org.foi.nwtis.marhranj.ejb.eb.Korisnici;
 
 /**
  *
- * @author at059201
+ * @author marhranj
  */
 @Stateless
 public class KorisniciFacade extends AbstractFacade<Korisnici> {

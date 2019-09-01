@@ -81,8 +81,8 @@ public class AIRP2WS {
                         .orElse(new MojAvionLeti());
 
                 rezultat.close();
-            } catch (SQLException ex) {
-                System.out.println("SQLException: " + ex);
+            } catch (SQLException e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             }
         }
 
@@ -123,8 +123,8 @@ public class AIRP2WS {
                 avioni = BPUtils.dohvatiAvioneIzResultSeta(rezultat);
 
                 rezultat.close();
-            } catch (SQLException ex) {
-                System.out.println("SQLException: " + ex);
+            } catch (SQLException e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             }
         }
 
@@ -169,8 +169,8 @@ public class AIRP2WS {
                 poletjeliAvioni = BPUtils.dohvatiAvioneIzResultSeta(rezultat);
 
                 rezultat.close();
-            } catch (SQLException ex) {
-                System.out.println("SQLException: " + ex);
+            } catch (SQLException e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             }
         }
 
@@ -215,8 +215,8 @@ public class AIRP2WS {
                 poletjeliAvioni = BPUtils.dohvatiAvioneIzResultSeta(rezultat);
 
                 rezultat.close();
-            } catch (SQLException ex) {
-                System.out.println("SQLException: " + ex);
+            } catch (SQLException e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             }
         }
 
@@ -264,8 +264,8 @@ public class AIRP2WS {
                 }
 
                 rezultat.close();
-            } catch (SQLException ex) {
-                System.out.println("SQLException: " + ex);
+            } catch (SQLException e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             }
         }
 
@@ -309,7 +309,7 @@ public class AIRP2WS {
 
                 rezultat.close();
             } catch (SQLException e) {
-                System.out.println("SQLException: " + e);
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             }
         }
 
@@ -324,21 +324,19 @@ public class AIRP2WS {
      * SOAP metoda koja dodaje korisnika
      *
      * @param korisnik
-     * @param korisnickoIme
-     * @param lozinka
      * @return
      */
     @WebMethod(operationName = "dodajKorisnika")
-    public boolean dodajKorisnika(@WebParam(name = "korisnik") Korisnik korisnik,
-            @WebParam(name = "korisnickoIme") String korisnickoIme, @WebParam(name = "lozinka") String lozinka) {
+    public boolean dodajKorisnika(@WebParam(name = "korisnik") Korisnik korisnik) {
 
+        boolean dodanKorisnik = false;
         BrojacVremena brojacVremena = new BrojacVremena();
 
         HttpServletRequest request = (HttpServletRequest) context.getMessageContext().get(MessageContext.SERVLET_REQUEST);
 
-        if (Objects.nonNull(korisnik) && BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
+        if (Objects.nonNull(korisnik)) {
             try (Connection con = KonektorBazePodataka.dajKonekciju();
-                    PreparedStatement dodajKorisnika = con.prepareStatement("INSERT INTO KORISNICI(`ime`, `prezime`, `korisnickoIme`,`lozinka`,`email`) VALUES (?, ?, ?, ?, ?, ?);");) {
+                    PreparedStatement dodajKorisnika = con.prepareStatement("INSERT INTO KORISNICI(`ime`, `prezime`, `korisnickoIme`,`lozinka`,`email`) VALUES (?, ?, ?, ?, ?);");) {
 
                 dodajKorisnika.setString(1, korisnik.getIme());
                 dodajKorisnika.setString(2, korisnik.getPrezime());
@@ -346,17 +344,17 @@ public class AIRP2WS {
                 dodajKorisnika.setString(4, korisnik.getLozinka());
                 dodajKorisnika.setString(5, korisnik.getEmail());
 
-                return dodajKorisnika.executeUpdate() > 0;
+                dodanKorisnik = dodajKorisnika.executeUpdate() > 0;
             } catch (SQLException e) {
-                System.out.println("SQLException: " + e);
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             }
-        }
-
-        pisacDnevnika.upisUDnevnik(korisnickoIme, "SOAP servis za dodavanje korisnika", "SOAP",
+            
+            pisacDnevnika.upisUDnevnik(korisnik.getKorisnickoIme(), "SOAP servis za dodavanje korisnika", "SOAP",
                 request.getRemoteHost(), request.getRemoteAddr(),
                 brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
+        }
 
-        return false;
+        return dodanKorisnik;
     }
 
     /**
@@ -371,24 +369,25 @@ public class AIRP2WS {
     public boolean azurirajKorisnika(@WebParam(name = "korisnik") Korisnik korisnik,
             @WebParam(name = "korisnickoIme") String korisnickoIme, @WebParam(name = "lozinka") String lozinka) {
 
+        boolean azuriranKorisnik = false;
         BrojacVremena brojacVremena = new BrojacVremena();
 
         HttpServletRequest request = (HttpServletRequest) context.getMessageContext().get(MessageContext.SERVLET_REQUEST);
 
         if (Objects.nonNull(korisnik) && BPUtils.provjeriKorisnika(korisnickoIme, lozinka)) {
             try (Connection con = KonektorBazePodataka.dajKonekciju();
-                    PreparedStatement azurirajKorisnika = con.prepareStatement("UPDATE KORISNICI SET `ime` = ?, `prezime` = ?, `korisnickoIme` = ?,`lozinka` = ?,`email`= ? WHERE id = ?;");) {
+                    PreparedStatement azurirajKorisnika = con.prepareStatement("UPDATE KORISNICI SET `ime` = ?, `prezime` = ?, `korisnickoIme` = ?,`lozinka` = ?,`email`= ? WHERE `korisnickoIme` = ?;");) {
 
                 azurirajKorisnika.setString(1, korisnik.getIme());
                 azurirajKorisnika.setString(2, korisnik.getPrezime());
                 azurirajKorisnika.setString(3, korisnik.getKorisnickoIme());
                 azurirajKorisnika.setString(4, korisnik.getLozinka());
                 azurirajKorisnika.setString(5, korisnik.getEmail());
-                azurirajKorisnika.setInt(6, korisnik.getId());
+                azurirajKorisnika.setString(6, korisnik.getKorisnickoIme());
 
-                return azurirajKorisnika.executeUpdate() > 0;
+                azuriranKorisnik = azurirajKorisnika.executeUpdate() > 0;
             } catch (SQLException e) {
-                System.out.println("SQLException: " + e);
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             }
         }
 
@@ -396,7 +395,7 @@ public class AIRP2WS {
                 request.getRemoteHost(), request.getRemoteAddr(),
                 brojacVremena.dohvatiVrijemeProsloOdInicijalizacije());
 
-        return false;
+        return azuriranKorisnik;
     }
 
     /**
@@ -432,8 +431,8 @@ public class AIRP2WS {
 
                     korisnici.add(korisnik);
                 }
-            } catch (SQLException ex) {
-                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, ex);
+            } catch (SQLException e) {
+                Logger.getLogger(this.getClass().getName()).log(Level.SEVERE, null, e);
             }
         }
         

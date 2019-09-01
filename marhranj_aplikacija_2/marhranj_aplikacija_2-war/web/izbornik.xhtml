@@ -1,0 +1,29 @@
+<ui:composition template="./predlozak.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.prime.com.tr/ui"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html">
+
+    <ui:define name="naslov">#{p['izbornik.naslov']}</ui:define>
+
+    <ui:define name="top">#{p['izbornik.naslov']}</ui:define>
+
+    <ui:define name="content">
+        <br/>
+
+        <h:form>
+            <h:commandButton action="#{lokalizacija.promjeniJezik('hr')}"
+                             value="#{p['jezik.hr']}"/>
+            <h:outputText value=" " />
+            <h:commandButton action="#{lokalizacija.promjeniJezik('en')}"
+                             value="#{p['jezik.en']}"/>
+        </h:form>
+        
+        <br/>
+
+        <h:link outcome="korisnici" value="#{p['izbornik.korisnici']}" /><br/>
+        <h:link outcome="aerodromi" value="#{p['izbornik.aerodromi']}" /><br/>
+
+    </ui:define>
+</ui:composition>
