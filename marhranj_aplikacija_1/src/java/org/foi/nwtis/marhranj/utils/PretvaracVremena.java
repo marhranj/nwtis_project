@@ -21,7 +21,7 @@ public class PretvaracVremena {
     
     public static Timestamp pretvoriStringUTimestamp(String stringDatum) {
         try {
-          DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+          DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
           Date date = formatter.parse(stringDatum);
           Timestamp timeStampDate = new Timestamp(date.getTime());
 

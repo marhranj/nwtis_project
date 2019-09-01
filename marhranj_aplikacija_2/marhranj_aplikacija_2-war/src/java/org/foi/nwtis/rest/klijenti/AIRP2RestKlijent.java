@@ -44,8 +44,15 @@ public class AIRP2RestKlijent {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
     }
 
-    public String dodajAerodrom(Object requestEntity) throws ClientErrorException {
-        return webTarget.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON), String.class);
+    public String dodajAerodrom(Object requestEntity, String korisnickoIme, String lozinka) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        if (lozinka != null) {
+            resource = resource.queryParam("lozinka", lozinka);
+        }
+        if (korisnickoIme != null) {
+            resource = resource.queryParam("korisnickoIme", korisnickoIme);
+        }
+        return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON), String.class);
     }
 
     public String dohvatiStatusAerodroma(String id, String lozinka, String korisnickoIme) throws ClientErrorException {
@@ -60,8 +67,15 @@ public class AIRP2RestKlijent {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
     }
 
-    public String aktivirajAerodrom(String id) throws ClientErrorException {
-        return webTarget.path(java.text.MessageFormat.format("{0}/aktiviraj", new Object[]{id})).request().post(null, String.class);
+    public String aktivirajAerodrom(String id, String korisnickoIme, String lozinka) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        if (lozinka != null) {
+            resource = resource.queryParam("lozinka", lozinka);
+        }
+        if (korisnickoIme != null) {
+            resource = resource.queryParam("korisnickoIme", korisnickoIme);
+        }
+        return resource.path(java.text.MessageFormat.format("{0}/aktiviraj", new Object[]{id})).request().post(null, String.class);
     }
 
     public String obrisiOdabraneAvioneAerodroma(String id, String aid) throws ClientErrorException {
@@ -107,16 +121,30 @@ public class AIRP2RestKlijent {
         return resource.request(javax.ws.rs.core.MediaType.APPLICATION_JSON).get(String.class);
     }
 
-    public String blokirajAerodrom(String id) throws ClientErrorException {
-        return webTarget.path(java.text.MessageFormat.format("{0}/blokiraj", new Object[]{id})).request().post(null, String.class);
+    public String blokirajAerodrom(String id, String korisnickoIme, String lozinka) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        if (lozinka != null) {
+            resource = resource.queryParam("lozinka", lozinka);
+        }
+        if (korisnickoIme != null) {
+            resource = resource.queryParam("korisnickoIme", korisnickoIme);
+        }
+        return resource.path(java.text.MessageFormat.format("{0}/blokiraj", new Object[]{id})).request().post(null, String.class);
     }
 
     public String dodajAvioneAerodromu(Object requestEntity, String id) throws ClientErrorException {
         return webTarget.path(java.text.MessageFormat.format("{0}/avion", new Object[]{id})).request(javax.ws.rs.core.MediaType.APPLICATION_JSON).post(javax.ws.rs.client.Entity.entity(requestEntity, javax.ws.rs.core.MediaType.APPLICATION_JSON), String.class);
     }
 
-    public String obrisiAerodrom(String id) throws ClientErrorException {
-        return webTarget.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete(String.class);
+    public String obrisiAerodrom(String id, String korisnickoIme, String lozinka) throws ClientErrorException {
+        WebTarget resource = webTarget;
+        if (lozinka != null) {
+            resource = resource.queryParam("lozinka", lozinka);
+        }
+        if (korisnickoIme != null) {
+            resource = resource.queryParam("korisnickoIme", korisnickoIme);
+        }
+        return resource.path(java.text.MessageFormat.format("{0}", new Object[]{id})).request().delete(String.class);
     }
 
     public String obrisiSveAvioneAerodroma(String id) throws ClientErrorException {

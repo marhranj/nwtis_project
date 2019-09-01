@@ -1,0 +1,87 @@
+<ui:composition template="./predlozak.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:p="http://primefaces.org/ui">
+
+    <f:metadata>
+        <f:viewAction action="#{dnevnik.init}" />
+    </f:metadata>    
+
+    <ui:define name="naslov">#{p['dnevnik.naslov']}</ui:define>
+
+    <ui:define name="top">#{p['dnevnik.naslov']}</ui:define>
+
+    <ui:define name="content">
+        <br/>
+
+        <h:form>
+            <h:commandButton action="#{lokalizacija.promjeniJezik('hr')}"
+                             value="#{p['jezik.hr']}"/>
+            <h:outputText value=" " />
+            <h:commandButton action="#{lokalizacija.promjeniJezik('en')}"
+                             value="#{p['jezik.en']}"/>
+        </h:form>
+
+        <br/>
+
+        <h:form>
+            <p:outputLabel>#{p['dnevnik.vrsta']}</p:outputLabel>
+            <p:inputText value="#{dnevnik.vrstaZapisa}"></p:inputText>
+            <p:outputLabel>#{p['dnevnik.pocetak']}</p:outputLabel>
+            <p:inputMask  value="#{dnevnik.pocetnoVrijeme}"  mask="99-99-9999 99:99:99"></p:inputMask>
+            <p:outputLabel>#{p['dnevnik.kraj']}</p:outputLabel>
+            <p:inputMask  value="#{dnevnik.zavrsnoVrijeme}"  mask="99-99-9999 99:99:99"></p:inputMask>
+            <h:panelGroup style="margin:15px ">    
+                <h:commandButton value="Filtriraj" action="#{dnevnik.filtrirajZapise()}">
+                    <f:ajax execute="@form" render="@form" />
+                </h:commandButton>
+                <br />
+            </h:panelGroup>
+            <br />
+            <h:outputLabel value="#{dnevnik.poruka}" style="color: red "/>
+            <br />
+            <p:dataTable  var="zapisDnevnika" value="#{dnevnik.zapisiDnevnika}"
+                          paginator="true" rows="#{dnevnik.tablicaBrojRedaka}" paginatorPosition="bottom">
+                <f:facet name="header">
+                    #{p['dnevnik.pregled']}
+                </f:facet>
+                <p:column>
+                    <f:facet name="header">Id</f:facet>
+                    <h:outputText value="#{zapisDnevnika.id}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['dnevnik.korisnik']}</f:facet>
+                    <h:outputText value="#{zapisDnevnika.korisnik}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['dnevnik.vrijeme']}</f:facet>
+                    <h:outputText value="#{zapisDnevnika.vrijeme}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['dnevnik.naredba']}</f:facet>
+                    <h:outputText value="#{zapisDnevnika.naredba}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">URL</f:facet>
+                    <h:outputText value="#{zapisDnevnika.url}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">IP</f:facet>
+                    <h:outputText value="#{zapisDnevnika.ip}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['dnevnik.vrsta']}</f:facet>
+                    <h:outputText value="#{zapisDnevnika.vrsta}"></h:outputText>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">#{p['dnevnik.trajanje']}</f:facet>
+                    <h:outputText value="#{zapisDnevnika.trajanje}"></h:outputText>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+
+        <br/>
+    </ui:define>
+</ui:composition>

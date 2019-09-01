@@ -15,9 +15,9 @@
             <p:outputLabel>Vrsta zapisa: </p:outputLabel>
             <p:inputText value="#{obradaDnevnika.vrstaZapisa}"></p:inputText>
             <p:outputLabel> Pocetno vrijeme: </p:outputLabel>
-            <p:inputMask  value="#{obradaDnevnika.pocetnoVrijeme}"  mask="9999-99-99 99:99:99"></p:inputMask>
+            <p:inputMask  value="#{obradaDnevnika.pocetnoVrijeme}"  mask="99-99-9999 99:99:99"></p:inputMask>
             <p:outputLabel> Zavrsno vrijeme: </p:outputLabel>
-            <p:inputMask  value="#{obradaDnevnika.zavrsnoVrijeme}"  mask="9999-99-99 99:99:99"></p:inputMask>
+            <p:inputMask  value="#{obradaDnevnika.zavrsnoVrijeme}"  mask="99-99-9999 99:99:99"></p:inputMask>
             <h:panelGroup style="margin:15px ">    
                 <h:commandButton value="Filtriraj" action="#{obradaDnevnika.filtrirajZapise()}">
                     <f:ajax execute="@form" render="@form" />
