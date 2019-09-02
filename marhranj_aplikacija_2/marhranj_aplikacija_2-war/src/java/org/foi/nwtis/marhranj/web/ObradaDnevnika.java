@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -71,7 +72,10 @@ public class ObradaDnevnika implements Serializable {
 
     public double getTablicaBrojRedaka() {
         RestWsOdgovor restWsOdgovor = gson.fromJson(airp2RestKlijent.dohvatiTablicaBrojRedaka(ulogiranaLozinka, ulogiraniKorisnik), RestWsOdgovor.class);
-        return (Double) restWsOdgovor.getOdgovor();
+        if (Objects.nonNull(restWsOdgovor)) {
+            return (Double) restWsOdgovor.getOdgovor();
+        }
+        return 5d;
     }
 
     public List<Dnevnik> getZapisiDnevnika() {

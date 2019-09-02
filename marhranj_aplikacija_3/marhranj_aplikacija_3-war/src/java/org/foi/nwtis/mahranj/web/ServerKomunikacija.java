@@ -160,7 +160,7 @@ public class ServerKomunikacija implements Serializable {
             if (validirajNaredbuZaGrupu(naredba)) {
                 poruka = "Grupa aktivirana";
             } else {
-                poruka = "Grupa je već bila aktivirana";
+                poruka = "Grupa je već bila aktivirana ili je grupa deregistrirana";
             }
         } else {
             poruka = "Neuspjesna autentikacija";
@@ -173,7 +173,7 @@ public class ServerKomunikacija implements Serializable {
             if (validirajNaredbuZaGrupu(naredba)) {
                 poruka = "Grupa blokirana";
             } else {
-                poruka = "Grupa je već bila blokirana";
+                poruka = "Grupa je već bila blokirana ili je grupa deregistrirana";
             }
         } else {
             poruka = "Neuspjesna autentikacija";

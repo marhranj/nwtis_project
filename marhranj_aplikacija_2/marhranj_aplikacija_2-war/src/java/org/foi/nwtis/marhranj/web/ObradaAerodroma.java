@@ -51,15 +51,15 @@ public class ObradaAerodroma implements Serializable {
 
     private String icaoDodaj;
     private String icao24;
-    
+
     private List<Aerodrom> aerodromi = new ArrayList<>();
     private List<MojAvionLeti> avioni = new ArrayList<>();
-    
+
     private String icao;
     private Aerodrom aerodrom;
     private MeteoPodaci meteoPodaci;
     private String poruka;
-    
+
     private String pocetak = "";
     private String kraj = "";
 
@@ -81,14 +81,14 @@ public class ObradaAerodroma implements Serializable {
         aerodromi = preuzmiAerodrome();
         avioni = preuzmiAvione(pocetak, kraj);
     }
-    
+
     public void dodajAerodrom() {
         if (!icaoDodaj.isEmpty()) {
             JsonObject jsonObject = new JsonObject();
             jsonObject.addProperty("icao", icaoDodaj);
             String json = airp2RestKlijent.dodajAerodrom(jsonObject.toString(), ulogiraniKorisnik, ulogiranaLozinka);
             RestWsOdgovor restWsOdgovor = gson.fromJson(json, RestWsOdgovor.class);
-            String status = restWsOdgovor.getStatus();
+            String status = Objects.nonNull(restWsOdgovor) ? restWsOdgovor.getStatus() : "";
             if (Objects.nonNull(status) && status.contains("OK")) {
                 poruka = "Aerodrom uspjesno dodan";
             } else {
@@ -99,12 +99,12 @@ public class ObradaAerodroma implements Serializable {
         }
         aerodromi = preuzmiAerodrome();
     }
-    
+
     public void obrisiAerodrom() {
         if (!icao.isEmpty()) {
             String json = airp2RestKlijent.obrisiAerodrom(icao, ulogiraniKorisnik, ulogiranaLozinka);
             RestWsOdgovor restWsOdgovor = gson.fromJson(json, RestWsOdgovor.class);
-            String status = restWsOdgovor.getStatus();
+            String status = Objects.nonNull(restWsOdgovor) ? restWsOdgovor.getStatus() : "";
             if (Objects.nonNull(status) && status.contains("OK")) {
                 poruka = "Aerodrom uspjesno obrisan";
             } else {
@@ -115,12 +115,12 @@ public class ObradaAerodroma implements Serializable {
         }
         aerodromi = preuzmiAerodrome();
     }
-    
+
     public void aktivirajAerodrom() {
         if (!icao.isEmpty()) {
             String json = airp2RestKlijent.aktivirajAerodrom(icao, ulogiraniKorisnik, ulogiranaLozinka);
             RestWsOdgovor restWsOdgovor = gson.fromJson(json, RestWsOdgovor.class);
-            String status = restWsOdgovor.getStatus();
+            String status = Objects.nonNull(restWsOdgovor) ? restWsOdgovor.getStatus() : "";
             if (Objects.nonNull(status) && status.contains("OK")) {
                 poruka = "Aerodrom uspjesno aktiviran";
             } else {
@@ -130,12 +130,12 @@ public class ObradaAerodroma implements Serializable {
             poruka = "Morate oznaciti aerodrom kojeg zelite aktivirati";
         }
     }
-    
+
     public void blokirajAerodrom() {
         if (!icao.isEmpty()) {
             String json = airp2RestKlijent.blokirajAerodrom(icao, ulogiraniKorisnik, ulogiranaLozinka);
             RestWsOdgovor restWsOdgovor = gson.fromJson(json, RestWsOdgovor.class);
-            String status = restWsOdgovor.getStatus();
+            String status = Objects.nonNull(restWsOdgovor) ? restWsOdgovor.getStatus() : "";
             if (Objects.nonNull(status) && status.contains("OK")) {
                 poruka = "Aerodrom uspjesno blokiran";
             } else {
@@ -145,12 +145,12 @@ public class ObradaAerodroma implements Serializable {
             poruka = "Morate oznaciti aerodrom kojeg zelite blokirati";
         }
     }
-    
+
     public void dajStatusAerodroma() {
         if (!icao.isEmpty()) {
             String json = airp2RestKlijent.dohvatiStatusAerodroma(icao, ulogiranaLozinka, ulogiraniKorisnik);
             RestWsOdgovor restWsOdgovor = gson.fromJson(json, RestWsOdgovor.class);
-            Object odgovor = restWsOdgovor.getOdgovor();
+            Object odgovor = Objects.nonNull(restWsOdgovor) ? restWsOdgovor.getOdgovor() : null;
             if (Objects.nonNull(odgovor)) {
                 poruka = "Status aerodroma: " + icao + " - " + odgovor;
             } else {
@@ -160,7 +160,7 @@ public class ObradaAerodroma implements Serializable {
             poruka = "Morate oznaciti aerodrom za kojeg zelite dohvatiti status";
         }
     }
-    
+
     public void promjeniAerodrom(AjaxBehaviorEvent event) {
         aerodrom = aerodromi.stream()
                 .filter(aerodrom -> aerodrom.getIcao().equals(icao))
@@ -169,11 +169,11 @@ public class ObradaAerodroma implements Serializable {
         preuzmiMeteoPodatke();
         avioni = preuzmiAvione(pocetak, kraj);
     }
-    
+
     public void filtirajAvione() {
         if (!(!pocetak.isEmpty() && !kraj.isEmpty())) {
             poruka = "Morate unijeti oba datuma ukoliko želite filtrirati, u suprotnom prikazati će se nefiltrirani avioni";
-        } 
+        }
         avioni = preuzmiAvione(pocetak, kraj);
     }
 
@@ -182,7 +182,7 @@ public class ObradaAerodroma implements Serializable {
         JsonObject jsonObject = (JsonObject) new JsonParser().parse(json);
         return dohvatiAerodromeIzJsona(jsonObject);
     }
-    
+
     public List<MojAvionLeti> preuzmiAvione(String pocetak, String kraj) {
         String icao = "";
         if (Objects.nonNull(aerodrom)) {
@@ -194,7 +194,7 @@ public class ObradaAerodroma implements Serializable {
         String najveceVrijeme = kraj.isEmpty() ? "31-12-9999 23:59:59" : kraj;
         return port.dajAvionePoletjeleSAerodroma(icao, najmanjeVrijeme, najveceVrijeme, ulogiraniKorisnik, ulogiranaLozinka);
     }
-    
+
     public String pretvoriLongUDatum(long datumLong) {
         SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         Date date = new Date(datumLong * 1000);
@@ -224,7 +224,7 @@ public class ObradaAerodroma implements Serializable {
     public void setIcao24(String icao24) {
         this.icao24 = icao24;
     }
-    
+
     public String getIcaoDodaj() {
         return icaoDodaj;
     }
@@ -275,13 +275,15 @@ public class ObradaAerodroma implements Serializable {
 
     private List<Aerodrom> dohvatiAerodromeIzJsona(JsonObject jsonObject) {
         List<Aerodrom> aerodromi = new ArrayList<>();
-        JsonArray aerodromiJson = jsonObject.get("odgovor").getAsJsonArray();
-        aerodromiJson.forEach(aerodromJsonElement -> {
-            aerodromi.add(gson.fromJson(aerodromJsonElement, Aerodrom.class));
-        });
+        if (Objects.nonNull(jsonObject)) {
+            JsonArray aerodromiJson = jsonObject.get("odgovor").getAsJsonArray();
+            aerodromiJson.forEach(aerodromJsonElement -> {
+                aerodromi.add(gson.fromJson(aerodromJsonElement, Aerodrom.class));
+            });
+        }
         return aerodromi;
     }
-    
+
     private void preuzmiMeteoPodatke() {
         if (Objects.nonNull(aerodrom)) {
             meteoPodaci = port.dajMeteoPodatkeZaAerodrom(aerodrom.getIcao(), ulogiraniKorisnik, ulogiranaLozinka);

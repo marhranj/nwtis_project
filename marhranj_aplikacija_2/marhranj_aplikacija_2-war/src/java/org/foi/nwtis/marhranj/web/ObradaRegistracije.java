@@ -52,7 +52,7 @@ public class ObradaRegistracije implements Serializable {
                 if (!korisnikJsonString.isEmpty()) {
                     String json = restKlijent.dodajKorisnika(korisnikJsonString);
                     RestWsOdgovor restWsOdgovor = gson.fromJson(json, RestWsOdgovor.class);
-                    String status = restWsOdgovor.getStatus();
+                    String status = Objects.nonNull(restWsOdgovor) ? restWsOdgovor.getStatus() : "";
                     if (Objects.nonNull(status) && status.contains("OK")) {
                         return "prijava";
                     } else {

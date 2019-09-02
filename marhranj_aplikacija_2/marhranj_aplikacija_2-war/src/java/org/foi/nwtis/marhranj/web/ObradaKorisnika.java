@@ -85,7 +85,7 @@ public class ObradaKorisnika implements Serializable {
                 if (!korisnikJsonString.isEmpty()) {
                     String json = korisniciRestKlijent.azurirajKorisnika(korisnikJsonString, ulogiraniKorisnik, ulogiranaLozinka);
                     RestWsOdgovor restWsOdgovor = gson.fromJson(json, RestWsOdgovor.class);
-                    String status = restWsOdgovor.getStatus();
+                    String status = Objects.nonNull(restWsOdgovor) ? restWsOdgovor.getStatus() : "";
                     if (Objects.nonNull(status) && status.contains("OK")) {
                         poruka = "Korisnik uspjesno azuriran";
                         azurirajSesiju();
@@ -106,7 +106,10 @@ public class ObradaKorisnika implements Serializable {
 
     public double getTablicaBrojRedaka() {
         RestWsOdgovor restWsOdgovor = gson.fromJson(airp2RestKlijent.dohvatiTablicaBrojRedaka(ulogiranaLozinka, ulogiraniKorisnik), RestWsOdgovor.class);
-        return (Double) restWsOdgovor.getOdgovor();
+        if (Objects.nonNull(restWsOdgovor)) {
+            return (Double) restWsOdgovor.getOdgovor();
+        }
+        return 5d;
     }
 
     public String getKorisnickoIme() {
@@ -209,11 +212,13 @@ public class ObradaKorisnika implements Serializable {
 
     private List<Korisnik> dohvatiKorisnikeIzJsona(JsonObject jsonObject) {
         List<Korisnik> korisnici = new ArrayList<>();
-        JsonArray korisniciJson = jsonObject.get("odgovor").getAsJsonArray();
-        korisniciJson.forEach(korisnikJsonElement -> {
-            Korisnik korisnik = gson.fromJson(korisnikJsonElement, Korisnik.class);
-            korisnici.add(korisnik);
-        });
+        if (Objects.nonNull(jsonObject)) {
+            JsonArray korisniciJson = jsonObject.get("odgovor").getAsJsonArray();
+            korisniciJson.forEach(korisnikJsonElement -> {
+                Korisnik korisnik = gson.fromJson(korisnikJsonElement, Korisnik.class);
+                korisnici.add(korisnik);
+            });
+        }
         return korisnici;
     }
 

@@ -45,7 +45,7 @@ public class ObradaPrijave implements Serializable {
             String authJson = jsonObject.toString().replaceAll("\\{", "%7B").replaceAll("\\}", "%7D");
             String json = restKlijent.dohvatiAutenticirajJednogKorisnika(korisnickoIme, lozinka, authJson, korisnickoIme);  
             RestWsOdgovor restWsOdgovor = gson.fromJson(json, RestWsOdgovor.class);
-            String status = restWsOdgovor.getStatus();
+            String status = Objects.nonNull(restWsOdgovor) ? restWsOdgovor.getStatus() : "";
             if (Objects.nonNull(status) && status.contains("OK")) {
                 Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();
                 sessionMap.put("korisnickoIme", korisnickoIme);
