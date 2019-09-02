@@ -120,6 +120,8 @@ public class ServerKomunikacija implements Serializable {
                 poruka = "STANJE: Preuzima samo poslužiteljske komande i preuzima podatke za aerodrome";
             } else if (status.contains(Statusi.OK_14)) {
                 poruka = "STANJE: Preuzima samo poslužiteljske komanda i ne preuzima podatke za aerodrome";
+            } else {
+                poruka = "Nije moguće utvrditi status servera";
             }
         } else {
             poruka = "Neuspjesna autentikacija";
@@ -188,6 +190,12 @@ public class ServerKomunikacija implements Serializable {
                 poruka = "STANJE: Grupa je blokirana";
             } else if (status.contains(Statusi.ERR_21)) {
                 poruka = "STANJE: Grupa ne postoji";
+            } else if (status.contains(Statusi.ERR_22)) {
+                poruka = "STANJE: Grupa deregistrirana";
+            } else if (status.contains(Statusi.OK_23)) {
+                poruka = "STANJE: Grupa registrirana";
+            } else {
+                poruka = "Nije moguće utvrditi status grupe";
             }
         } else {
             poruka = "Neuspjesna autentikacija";

@@ -22,6 +22,7 @@ public final class Statusi {
     public static final String OK_20 = "OK 20";
     public static final String OK_21 = "OK 21";
     public static final String OK_22 = "OK 22";
+    public static final String OK_23 = "OK 23";
     
     public static final String ERR_11 = "ERR 11";
     public static final String ERR_12 = "ERR 12";

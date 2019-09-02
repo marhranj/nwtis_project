@@ -165,6 +165,12 @@ public class RadnaDretva extends Thread {
                 break;
             case NEPOSTOJI:
                 dodajPoruku(Statusi.ERR_21);
+                break;
+            case REGISTRIRAN:
+                dodajPoruku(Statusi.OK_23);
+                break;
+            case DEREGISTRIRAN: 
+                dodajPoruku(Statusi.ERR_22);
         }
     }
     

@@ -3,7 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_3/marhranj_aplikacija_3-war/src/java/org/foi/nwtis/marhranj/rest/serveri/KorisniciRestAPI.java</file>
+            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_3/marhranj_aplikacija_3-war/web/index.xhtml</file>
+            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_3/marhranj_aplikacija_3-war/src/java/org/foi/nwtis/marhranj/utils/SocketUtils.java</file>
+            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_3/marhranj_aplikacija_3-war/src/java/org/foi/nwtis/marhranj/web/zrna/RestWsOdgovor.java</file>
+            <file>file:/Users/at059201/Dev/Faks/marhranj_projekt/marhranj_aplikacija_3/marhranj_aplikacija_3-war/src/java/org/foi/nwtis/mahranj/web/ServerKomunikacija.java</file>
         </group>
     </open-files>
 </project-private>
